@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#6B4226">
+<title>Timber Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500;600;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<style>
+  :root {
+    --bg: #EFE3CC;
+    --panel: #F8F2E4;
+    --ink: #2A211A;
+    --ink-soft: #6E5F4D;
+    --rule: #D9C7A0;
+    --purchase: #6B4226;
+    --purchase-soft: #E4D3BE;
+    --sale: #375C40;
+    --sale-soft: #D7E4D4;
+    --accent: #B5652E;
+    --accent-ink: #FFF9EF;
+    --danger: #A63D2F;
+    --shadow: rgba(42, 33, 26, 0.12);
+    font-family: "Work Sans", system-ui, sans-serif;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1C1611;
+      --panel: #261E17;
+      --ink: #F1E7D6;
+      --ink-soft: #B8A88F;
+      --rule: #4A3B2A;
+      --purchase: #D19566;
+      --purchase-soft: #3A2A1D;
+      --sale: #85B48D;
+      --sale-soft: #22342A;
+      --accent: #E08A45;
+      --accent-ink: #241A0F;
+      --danger: #E27A66;
+      --shadow: rgba(0, 0, 0, 0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1C1611;
+    --panel: #261E17;
+    --ink: #F1E7D6;
+    --ink-soft: #B8A88F;
+    --rule: #4A3B2A;
+    --purchase: #D19566;
+    --purchase-soft: #3A2A1D;
+    --sale: #85B48D;
+    --sale-soft: #22342A;
+    --accent: #E08A45;
+    --accent-ink: #241A0F;
+    --danger: #E27A66;
+    --shadow: rgba(0, 0, 0, 0.35);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    height: 100%;
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  #app {
+    max-width: 560px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  header.top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: calc(env(safe-area-inset-top, 0px) + 16px) 18px 12px;
+    gap: 12px;
+  }
+  .wordmark {
+    font-family: "Roboto Slab", serif;
+    font-weight: 700;
+    font-size: 21px;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+  .wordmark span { display: block; font-family: "Work Sans", sans-serif; font-weight: 500; font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+  .date-box {
+    border: 1.5px solid var(--rule);
+    border-radius: 8px;
+    padding: 6px 10px;
+    text-align: right;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    background: var(--panel);
+  }
+  .date-box b { color: var(--ink); font-size: 12px; display: block; }
+  main {
+    flex: 1;
+    padding: 4px 18px 100px;
+    overflow-y: auto;
+  }
+  /* ---- Type toggle ---- */
+  .type-toggle {
+    display: flex;
+    gap: 8px;
+    margin: 10px 0 18px;
+  }
+  .type-toggle button {
+    flex: 1;
+    padding: 13px 0;
+    border-radius: 12px;
+    border: 1.5px solid var(--rule);
+    background: var(--panel);
+    color: var(--ink-soft);
+    font-family: "Work Sans", sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background .15s, border-color .15s, color .15s;
+  }
+  .type-toggle button.active[data-type="purchase"] {
+    background: var(--purchase-soft); border-color: var(--purchase); color: var(--purchase);
+  }
+  .type-toggle button.active[data-type="sale"] {
+    background: var(--sale-soft); border-color: var(--sale); color: var(--sale);
+  }
+  /* ---- Form ---- */
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 5px;
+  }
+  .field .opt { font-weight: 400; color: var(--ink-soft); opacity: .8; }
+  .field input, .field select {
+    width: 100%;
+    padding: 12px 13px;
+    border-radius: 10px;
+    border: 1.5px solid var(--rule);
+    background: var(--panel);
+    color: var(--ink);
+    font-size: 16px;
+    font-family: "Work Sans", sans-serif;
+  }
+  .field input:focus, .field select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .row2 { display: flex; gap: 10px; }
+  .row2 .field { flex: 1; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .chip {
+    padding: 6px 11px;
+    border-radius: 999px;
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    font-size: 12.5px;
+    font-family: "JetBrains Mono", monospace;
+    color: var(--ink-soft);
+    cursor: pointer;
+  }
+  .calc-box {
+    border: 1.5px dashed var(--rule);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin: 4px 0 18px;
+    background: var(--panel);
+  }
+  .calc-box .eq {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+  .calc-box .amount {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+  }
+  .calc-box .amount .cur { font-size: 16px; font-weight: 600; color: var(--ink-soft); margin-right: 2px; }
+  .save-btn {
+    width: 100%;
+    padding: 15px 0;
+    border-radius: 12px;
+    border: none;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-family: "Work Sans", sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 3px 0 var(--shadow);
+  }
+  .save-btn:active { transform: translateY(2px); box-shadow: none; }
+  .cancel-edit {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  /* ---- Ledger list ---- */
+  .filter-row { display: flex; gap: 8px; margin: 10px 0 14px; }
+  .filter-row button {
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: 1.5px solid var(--rule);
+    background: var(--panel);
+    color: var(--ink-soft);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .filter-row button.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .search-field { margin-bottom: 14px; }
+  .search-field input {
+    width: 100%;
+    padding: 11px 13px;
+    border-radius: 10px;
+    border: 1.5px solid var(--rule);
+    background: var(--panel);
+    color: var(--ink);
+    font-size: 15px;
+  }
+  .day-group { margin-bottom: 18px; }
+  .day-label {
+    font-family: "Roboto Slab", serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--ink-soft);
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .entry-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 4px;
+    border-bottom: 1px solid var(--rule);
+    cursor: pointer;
+  }
+  .entry-row:last-child { border-bottom: none; }
+  .bar { width: 4px; align-self: stretch; border-radius: 3px; flex-shrink: 0; }
+  .bar.purchase { background: var(--purchase); }
+  .bar.sale { background: var(--sale); }
+  .entry-main { flex: 1; min-width: 0; }
+  .entry-code { font-weight: 700; font-size: 14.5px; }
+  .entry-sub { font-size: 12px; color: var(--ink-soft); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .entry-amt { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 15px; text-align: right; white-space: nowrap; }
+  .entry-amt.purchase { color: var(--purchase); }
+  .entry-amt.sale { color: var(--sale); }
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+  /* ---- Summary ---- */
+  .summary-card {
+    background: var(--panel);
+    border: 1.5px solid var(--rule);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+  }
+  .summary-card h3 {
+    margin: 0 0 10px;
+    font-family: "Roboto Slab", serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .summary-line { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 0; }
+  .summary-line .lbl { font-size: 14px; color: var(--ink-soft); }
+  .summary-line .val { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 17px; }
+  .summary-line .val.purchase { color: var(--purchase); }
+  .summary-line .val.sale { color: var(--sale); }
+  /* ---- Detail modal ---- */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.4);
+    display: flex; align-items: flex-end;
+    z-index: 20;
+  }
+  .sheet {
+    background: var(--bg);
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto;
+    border-radius: 18px 18px 0 0;
+    padding: 20px 18px calc(env(safe-area-inset-bottom, 0px) + 20px);
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+  .sheet h3 { margin: 0 0 14px; font-family: "Roboto Slab", serif; }
+  .detail-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--rule); font-size: 14px; }
+  .detail-row span:first-child { color: var(--ink-soft); }
+  .sheet-actions { display: flex; gap: 10px; margin-top: 16px; }
+  .sheet-actions button {
+    flex: 1; padding: 12px 0; border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer;
+  }
+  .btn-edit { border: 1.5px solid var(--rule); background: var(--panel); color: var(--ink); }
+  .btn-delete { border: none; background: var(--danger); color: #fff; }
+  .btn-close { border: none; background: transparent; color: var(--ink-soft); text-decoration: underline; display: block; margin: 14px auto 0; }
+  /* ---- Bottom nav ---- */
+  nav.bottom {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    max-width: 560px;
+    margin: 0 auto;
+    background: var(--panel);
+    border-top: 1.5px solid var(--rule);
+    display: flex;
+    padding: 8px 10px calc(env(safe-area-inset-bottom, 0px) + 8px);
+    gap: 4px;
+  }
+  nav.bottom button {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 8px 0 4px;
+    color: var(--ink-soft);
+    font-family: "Work Sans", sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 10px;
+  }
+  nav.bottom button.active { color: var(--accent); }
+  nav.bottom button svg { display: block; margin: 0 auto 3px; }
+  .toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: var(--bg);
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 30;
+    opacity: 0;
+    transition: opacity .25s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+  .offline-note {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    text-align: center;
+    padding: 4px 0 10px;
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <div class="wordmark">Timber Ledger<span id="offlineTag" style="display:none">local device only</span></div>
+    <div class="date-box"><b id="todayLabel">--</b><span id="todayCount">0 entries today</span></div>
+  </header>
+  <main id="main"></main>
+  <div id="modalRoot"></div>
+  <div class="toast" id="toast"></div>
+  <nav class="bottom">
+    <button data-view="add" id="navAdd">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add Entry
+    </button>
+    <button data-view="ledger" id="navLedger">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>
+      Ledger
+    </button>
+    <button data-view="summary" id="navSummary">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10"/><path d="M12 20V4"/><path d="M20 20v-6"/></svg>
+      Summary
+    </button>
+  </nav>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------- State ----------
+  var state = {
+    view: "add",
+    entryType: "purchase",
+    entries: [],
+    recentCodes: [],
+    editingId: null,
+    ledgerFilter: "all",
+    searchQuery: "",
+    unsub: null,
+    storageReady: false
+  };
+
+  var db = null;
+  var dbReady = false;
+  var LOCAL_KEY = "timberLedgerEntries_v1";
+
+  // ===== FIREBASE SETUP =====
+  // Paste the config object from Firebase Console > Project settings > Your apps (Web app) below.
+  // Until you do, the app runs fine on local storage only (per-device, no syncing).
+  var firebaseConfig = {
+    apiKey: "AIzaSyDTRa_S-s0PxYxqHZ_-zrGgWBbXpDLPvE8",
+    authDomain: "timber-ledge-dad.firebaseapp.com",
+    projectId: "timber-ledge-dad",
+    storageBucket: "timber-ledge-dad.firebasestorage.app",
+    messagingSenderId: "459353054774",
+    appId: "1:459353054774:web:ab2459bf813e30408b8297"
+  };
+  // ===========================
+
+  // ---------- Storage layer ----------
+  function loadLocalEntries() {
+    try {
+      var raw = localStorage.getItem(LOCAL_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) { return []; }
+  }
+  function saveLocalEntries(list) {
+    try { localStorage.setItem(LOCAL_KEY, JSON.stringify(list)); } catch (e) {}
+  }
+
+  function initStorage() {
+    var configured = firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf("YOUR_") !== 0;
+    if (!configured || typeof firebase === "undefined") {
+      goLocal();
+      return;
+    }
+    try {
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+      dbReady = true;
+      subscribeEntries();
+    } catch (e) {
+      goLocal();
+    }
+  }
+
+  function goLocal() {
+    dbReady = false;
+    document.getElementById("offlineTag").style.display = "block";
+    state.entries = loadLocalEntries();
+    afterEntriesLoaded();
+  }
+
+  function subscribeEntries() {
+    try {
+      var q = db.collection("entries").orderBy("createdAt", "desc").limit(500);
+      state.unsub = q.onSnapshot(function (snap) {
+        try {
+          state.entries = snap.docs.map(function (d) {
+            var data = Object.assign({}, d.data());
+            data._id = d.id;
+            return data;
+          });
+          afterEntriesLoaded();
+        } catch (e) {
+          goLocal();
+        }
+      }, function (err) {
+        goLocal();
+      });
+    } catch (e) { goLocal(); }
+  }
+
+  function afterEntriesLoaded() {
+    state.storageReady = true;
+    computeRecentCodes();
+    updateHeader();
+    render();
+  }
+
+  function computeRecentCodes() {
+    var seen = {};
+    var codes = [];
+    for (var i = 0; i < state.entries.length; i++) {
+      var c = (state.entries[i].code || "").trim();
+      if (c && !seen[c]) { seen[c] = true; codes.push(c); }
+      if (codes.length >= 8) break;
+    }
+    state.recentCodes = codes;
+  }
+
+  function addOrUpdateEntry(data, id) {
+    if (dbReady) {
+      if (id) {
+        return db.collection("entries").doc(id).set(data);
+      }
+      return db.collection("entries").add(data);
+    } else {
+      var list = loadLocalEntries();
+      if (id) {
+        var idx = list.findIndex(function (e) { return e._id === id; });
+        if (idx > -1) list[idx] = Object.assign({}, data, { _id: id });
+      } else {
+        data._id = "local_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7);
+        list.unshift(data);
+      }
+      saveLocalEntries(list);
+      state.entries = list;
+      afterEntriesLoaded();
+      return Promise.resolve();
+    }
+  }
+
+  function removeEntry(id) {
+    if (dbReady) {
+      return db.collection("entries").doc(id).delete();
+    } else {
+      var list = loadLocalEntries().filter(function (e) { return e._id !== id; });
+      saveLocalEntries(list);
+      state.entries = list;
+      afterEntriesLoaded();
+      return Promise.resolve();
+    }
+  }
+
+  // ---------- Helpers ----------
+  function sanitizeDigits(v, maxLen) {
+    v = v.replace(/[^0-9]/g, "");
+    if (maxLen) v = v.slice(0, maxLen);
+    return v;
+  }
+  function sanitizeDecimal(v) {
+    v = v.replace(/[^0-9.]/g, "");
+    var parts = v.split(".");
+    if (parts.length > 2) v = parts[0] + "." + parts.slice(1).join("");
+    return v;
+  }
+  function sanitizeAlphaNum(v, allowSpace) {
+    return v.replace(allowSpace ? /[^a-zA-Z0-9 ]/g : /[^a-zA-Z0-9]/g, "");
+  }
+
+  function todayISO() {
+    var d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+  function dateISOOffset(daysAgo) {
+    var d = new Date();
+    d.setDate(d.getDate() - daysAgo);
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+  function seedDemoData() {
+    if (!state.storageReady) { showToast("Still setting up — try again in a second"); return; }
+    var demo = [
+      { daysAgo: 0, type: "purchase", code: "LM14", vehicle: "MH18BL4774", phone: "9864934904", quantity: 12.26, rate: 5700, deduction: 0, remarks: "urgent load", location: "Uddhar" },
+      { daysAgo: 0, type: "sale", code: "SAS16", vehicle: "MH26AD1832", phone: "9609258565", quantity: 8.5, rate: 6100, deduction: 0, remarks: "", location: "Chintory" },
+      { daysAgo: 1, type: "purchase", code: "DAR14", vehicle: "MH84834757", phone: "7798352260", quantity: 10.675, rate: 5700, deduction: 1500, remarks: "", location: "Vellon Durvaja" },
+      { daysAgo: 1, type: "sale", code: "G01", vehicle: "MH14U3791", phone: "8808566629", quantity: 6.2, rate: 5900, deduction: 0, remarks: "", location: "Rodhrani" },
+      { daysAgo: 2, type: "purchase", code: "HAS1M", vehicle: "MH24RU8627", phone: "9604255562", quantity: 5.7, rate: 5800, deduction: 0, remarks: "", location: "Chintory" },
+      { daysAgo: 3, type: "sale", code: "LM16", vehicle: "MH26AD3955", phone: "9673991060", quantity: 9.1, rate: 6000, deduction: 0, remarks: "", location: "Ganesh" }
+    ];
+    var chain = Promise.resolve();
+    demo.forEach(function (d, i) {
+      chain = chain.then(function () {
+        var amount = d.quantity * d.rate - d.deduction;
+        var data = {
+          type: d.type, code: d.code, location: d.location, remarks: d.remarks,
+          vehicle: d.vehicle, phone: d.phone, quantity: d.quantity, unit: "Ton",
+          rate: d.rate, deduction: d.deduction, amount: amount,
+          date: dateISOOffset(d.daysAgo),
+          createdAt: Date.now() - d.daysAgo * 86400000 - i * 1000
+        };
+        return addOrUpdateEntry(data, null);
+      });
+    });
+    chain.then(function () { showToast("Demo entries added"); });
+  }
+  function fmtDateLabel(iso) {
+    var d = new Date(iso + "T00:00:00");
+    return d.toLocaleDateString("en-IN", { weekday: "short", day: "2-digit", month: "short" });
+  }
+  function fmtINR(n) {
+    if (isNaN(n)) return "0";
+    return Math.round(n).toLocaleString("en-IN");
+  }
+  function showToast(msg) {
+    var t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(function () { t.classList.remove("show"); }, 1600);
+  }
+  function updateHeader() {
+    var now = new Date();
+    document.getElementById("todayLabel").textContent = now.toLocaleDateString("en-IN", { weekday: "short", day: "2-digit", month: "short" });
+    var todayCount = state.entries.filter(function (e) { return e.date === todayISO(); }).length;
+    document.getElementById("todayCount").textContent = todayCount + (todayCount === 1 ? " entry today" : " entries today");
+  }
+
+  // ---------- Render: nav ----------
+  function updateNav() {
+    ["add", "ledger", "summary"].forEach(function (v) {
+      document.getElementById("nav" + v.charAt(0).toUpperCase() + v.slice(1)).classList.toggle("active", state.view === v);
+    });
+  }
+
+  // ---------- Render: Add form ----------
+  var formDraft = { code: "", location: "", vehicle: "", phone: "", quantity: "", unit: "Ton", rate: "", deduction: "", remarks: "" };
+
+  function resetForm() {
+    formDraft = { code: "", location: "", vehicle: "", phone: "", quantity: "", unit: "Ton", rate: "", deduction: "", remarks: "" };
+    state.editingId = null;
+  }
+
+  function renderAdd() {
+    var m = document.getElementById("main");
+    var qty = parseFloat(formDraft.quantity) || 0;
+    var rate = parseFloat(formDraft.rate) || 0;
+    var ded = parseFloat(formDraft.deduction) || 0;
+    var gross = qty * rate;
+    var amount = gross - ded;
+
+    var chipsHtml = state.recentCodes.map(function (c) {
+      return '<span class="chip" data-code="' + escAttr(c) + '">' + escHtml(c) + '</span>';
+    }).join("");
+
+    m.innerHTML =
+      '<div class="type-toggle">' +
+        '<button data-type="purchase" class="' + (state.entryType === "purchase" ? "active" : "") + '">Purchase (In)</button>' +
+        '<button data-type="sale" class="' + (state.entryType === "sale" ? "active" : "") + '">Sale (Out)</button>' +
+      '</div>' +
+      (state.editingId ? '<div class="cancel-edit" id="cancelEditTop">Editing entry &middot; tap to cancel</div>' : '') +
+      '<div class="field"><label>Code</label>' +
+        (chipsHtml ? '<div class="chips">' + chipsHtml + '</div>' : '') +
+        '<input id="fCode" type="text" placeholder="e.g. LM14" value="' + escAttr(formDraft.code) + '" autocapitalize="characters" maxlength="12">' +
+      '</div>' +
+      '<div class="field"><label>Remarks <span class="opt">(optional)</span></label>' +
+        '<input id="fRemarks" type="text" placeholder="e.g. loose logs, urgent" value="' + escAttr(formDraft.remarks) + '">' +
+      '</div>' +
+      '<div class="field"><label>Location <span class="opt">(optional)</span></label>' +
+        '<input id="fLocation" type="text" placeholder="e.g. Uddhar Durvaja" value="' + escAttr(formDraft.location) + '">' +
+      '</div>' +
+      '<div class="row2">' +
+        '<div class="field"><label>Vehicle no. <span class="opt">(optional)</span></label>' +
+          '<input id="fVehicle" type="text" placeholder="MH 84 83 4757" value="' + escAttr(formDraft.vehicle) + '" autocapitalize="characters" maxlength="16">' +
+        '</div>' +
+        '<div class="field"><label>Phone <span class="opt">(optional)</span></label>' +
+          '<input id="fPhone" type="tel" inputmode="numeric" placeholder="9864934904" value="' + escAttr(formDraft.phone) + '" maxlength="10">' +
+        '</div>' +
+      '</div>' +
+      '<div class="row2">' +
+        '<div class="field"><label>Quantity (Tons)</label>' +
+          '<input id="fQuantity" type="text" inputmode="decimal" placeholder="0" value="' + escAttr(formDraft.quantity) + '">' +
+        '</div>' +
+        '<div class="field"><label>Rate <span class="opt">(per Ton)</span></label>' +
+          '<input id="fRate" type="text" inputmode="decimal" placeholder="0" value="' + escAttr(formDraft.rate) + '">' +
+        '</div>' +
+      '</div>' +
+      '<div class="field"><label>Deduction <span class="opt">(optional)</span></label>' +
+        '<input id="fDeduction" type="text" inputmode="decimal" placeholder="0" value="' + escAttr(formDraft.deduction) + '">' +
+      '</div>' +
+      '<div class="calc-box">' +
+        '<div class="eq">' + (qty || rate ? (qty + ' ' + formDraft.unit + ' &times; &#8377;' + rate + (ded ? ' &minus; &#8377;' + ded : '')) : 'Enter quantity &amp; rate') + '</div>' +
+        '<div class="amount"><span class="cur">&#8377;</span>' + fmtINR(amount) + '</div>' +
+      '</div>' +
+      '<button class="save-btn" id="saveBtn"' + (!state.storageReady ? ' disabled style="opacity:.5"' : '') + '>' + (!state.storageReady ? "Loading…" : (state.editingId ? "Update Entry" : "Save Entry")) + '</button>' +
+      (state.editingId ? '<div class="cancel-edit" id="cancelEditBottom">Cancel edit</div>' : '');
+
+    // wire events
+    document.getElementById("fCode").oninput = function (e) {
+      var v = sanitizeAlphaNum(e.target.value, false);
+      e.target.value = v; formDraft.code = v;
+    };
+    document.getElementById("fRemarks").oninput = function (e) { formDraft.remarks = e.target.value; };
+    document.getElementById("fLocation").oninput = function (e) { formDraft.location = e.target.value; };
+    document.getElementById("fVehicle").oninput = function (e) {
+      var v = sanitizeAlphaNum(e.target.value, true);
+      e.target.value = v; formDraft.vehicle = v;
+    };
+    document.getElementById("fPhone").oninput = function (e) {
+      var v = sanitizeDigits(e.target.value, 10);
+      e.target.value = v; formDraft.phone = v;
+    };
+    document.getElementById("fQuantity").oninput = function (e) { formDraft.quantity = sanitizeDecimal(e.target.value); renderAdd(); restoreFocus("fQuantity"); };
+    document.getElementById("fRate").oninput = function (e) { formDraft.rate = sanitizeDecimal(e.target.value); renderAdd(); restoreFocus("fRate"); };
+    document.getElementById("fDeduction").oninput = function (e) { formDraft.deduction = sanitizeDecimal(e.target.value); renderAdd(); restoreFocus("fDeduction"); };
+
+    Array.prototype.forEach.call(document.querySelectorAll(".type-toggle button"), function (btn) {
+      btn.onclick = function () { state.entryType = btn.getAttribute("data-type"); renderAdd(); };
+    });
+    Array.prototype.forEach.call(document.querySelectorAll(".chip"), function (chip) {
+      chip.onclick = function () { formDraft.code = chip.getAttribute("data-code"); renderAdd(); };
+    });
+    document.getElementById("saveBtn").onclick = handleSave;
+    var ce1 = document.getElementById("cancelEditTop");
+    var ce2 = document.getElementById("cancelEditBottom");
+    if (ce1) ce1.onclick = function () { resetForm(); renderAdd(); };
+    if (ce2) ce2.onclick = function () { resetForm(); renderAdd(); };
+  }
+
+  function restoreFocus(id) {
+    var el = document.getElementById(id);
+    if (el) { el.focus(); var v = el.value; el.value = ""; el.value = v; }
+  }
+
+  function handleSave() {
+    if (!state.storageReady) { showToast("Still setting up — try again in a second"); return; }
+    if (!formDraft.code.trim()) { showToast("Enter a code"); return; }
+    var qty = parseFloat(formDraft.quantity) || 0;
+    var rate = parseFloat(formDraft.rate) || 0;
+    if (!qty || !rate) { showToast("Enter quantity and rate"); return; }
+    var ded = parseFloat(formDraft.deduction) || 0;
+    var amount = qty * rate - ded;
+
+    var data = {
+      type: state.entryType,
+      code: formDraft.code.trim(),
+      location: formDraft.location.trim(),
+      remarks: formDraft.remarks.trim(),
+      vehicle: formDraft.vehicle.trim(),
+      phone: formDraft.phone.trim(),
+      quantity: qty,
+      unit: formDraft.unit,
+      rate: rate,
+      deduction: ded,
+      amount: amount,
+      date: state.editingId && formDraft._date ? formDraft._date : todayISO(),
+      createdAt: state.editingId && formDraft._createdAt ? formDraft._createdAt : Date.now()
+    };
+
+    addOrUpdateEntry(data, state.editingId).then(function () {
+      showToast(state.editingId ? "Entry updated" : "Entry saved");
+      resetForm();
+      renderAdd();
+    }).catch(function () {
+      showToast("Could not save — try again");
+    });
+  }
+
+  // ---------- Render: Ledger ----------
+  function renderLedger() {
+    var m = document.getElementById("main");
+    var filtered = state.entries.filter(function (e) {
+      if (state.ledgerFilter !== "all" && e.type !== state.ledgerFilter) return false;
+      if (state.searchQuery) {
+        var q = state.searchQuery.toLowerCase();
+        var hay = ((e.code || "") + " " + (e.location || "") + " " + (e.vehicle || "")).toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+
+    var groups = {};
+    var order = [];
+    filtered.forEach(function (e) {
+      if (!groups[e.date]) { groups[e.date] = []; order.push(e.date); }
+      groups[e.date].push(e);
+    });
+    order.sort(function (a, b) { return a < b ? 1 : -1; });
+
+    var html =
+      '<div class="filter-row">' +
+        ["all", "purchase", "sale"].map(function (f) {
+          var lbl = f === "all" ? "All" : f === "purchase" ? "Purchase" : "Sale";
+          return '<button data-filter="' + f + '" class="' + (state.ledgerFilter === f ? "active" : "") + '">' + lbl + '</button>';
+        }).join("") +
+      '</div>' +
+      '<div class="search-field"><input id="searchInput" type="text" placeholder="Search code, location, vehicle" value="' + escAttr(state.searchQuery) + '"></div>' +
+      '<div style="text-align:center;margin:-6px 0 14px"><span id="demoBtn" style="font-size:11.5px;color:var(--ink-soft);text-decoration:underline;cursor:pointer">Load demo entries (preview multi-day view)</span></div>';
+
+    if (order.length === 0) {
+      html += '<div class="empty-state">No entries yet.<br>Add your first one from the Add Entry tab.</div>';
+    } else {
+      order.forEach(function (date) {
+        var dayEntries = groups[date];
+        var dayTotal = { purchase: 0, sale: 0 };
+        dayEntries.forEach(function (e) { dayTotal[e.type] += e.amount; });
+        html += '<div class="day-group"><div class="day-label"><span>' + fmtDateLabel(date) + '</span><span>' +
+          (dayTotal.purchase ? 'In &#8377;' + fmtINR(dayTotal.purchase) + '  ' : '') +
+          (dayTotal.sale ? 'Out &#8377;' + fmtINR(dayTotal.sale) : '') +
+          '</span></div>';
+        dayEntries.forEach(function (e) {
+          html += '<div class="entry-row" data-id="' + escAttr(e._id) + '">' +
+            '<div class="bar ' + e.type + '"></div>' +
+            '<div class="entry-main"><div class="entry-code">' + escHtml(e.code) + '</div>' +
+            '<div class="entry-sub">' + escHtml([e.remarks, e.location, e.vehicle].filter(Boolean).join(" · ") || "—") + '</div></div>' +
+            '<div class="entry-amt ' + e.type + '">&#8377;' + fmtINR(e.amount) + '</div>' +
+          '</div>';
+        });
+        html += '</div>';
+      });
+    }
+
+    m.innerHTML = html;
+
+    Array.prototype.forEach.call(document.querySelectorAll(".filter-row button"), function (btn) {
+      btn.onclick = function () { state.ledgerFilter = btn.getAttribute("data-filter"); renderLedger(); };
+    });
+    document.getElementById("searchInput").oninput = function (e) {
+      state.searchQuery = e.target.value;
+      renderLedger();
+      var el = document.getElementById("searchInput");
+      el.focus(); el.selectionStart = el.selectionEnd = el.value.length;
+    };
+    Array.prototype.forEach.call(document.querySelectorAll(".entry-row"), function (row) {
+      row.onclick = function () { openDetail(row.getAttribute("data-id")); };
+    });
+    var demoBtn = document.getElementById("demoBtn");
+    if (demoBtn) demoBtn.onclick = seedDemoData;
+  }
+
+  function openDetail(id) {
+    var e = state.entries.find(function (x) { return x._id === id; });
+    if (!e) return;
+    var root = document.getElementById("modalRoot");
+    root.innerHTML =
+      '<div class="overlay" id="overlay"><div class="sheet">' +
+        '<h3>' + escHtml(e.code) + ' &middot; ' + (e.type === "purchase" ? "Purchase" : "Sale") + '</h3>' +
+        '<div class="detail-row"><span>Date</span><span>' + fmtDateLabel(e.date) + '</span></div>' +
+        (e.remarks ? '<div class="detail-row"><span>Remarks</span><span>' + escHtml(e.remarks) + '</span></div>' : '') +
+        (e.location ? '<div class="detail-row"><span>Location</span><span>' + escHtml(e.location) + '</span></div>' : '') +
+        (e.vehicle ? '<div class="detail-row"><span>Vehicle</span><span>' + escHtml(e.vehicle) + '</span></div>' : '') +
+        (e.phone ? '<div class="detail-row"><span>Phone</span><span>' + escHtml(e.phone) + '</span></div>' : '') +
+        '<div class="detail-row"><span>Quantity</span><span>' + e.quantity + ' ' + escHtml(e.unit) + '</span></div>' +
+        '<div class="detail-row"><span>Rate</span><span>&#8377;' + fmtINR(e.rate) + '</span></div>' +
+        (e.deduction ? '<div class="detail-row"><span>Deduction</span><span>&#8377;' + fmtINR(e.deduction) + '</span></div>' : '') +
+        '<div class="detail-row"><span>Amount</span><span><b>&#8377;' + fmtINR(e.amount) + '</b></span></div>' +
+        '<div class="sheet-actions">' +
+          '<button class="btn-edit" id="copyBtn">Copy</button>' +
+          '<button class="btn-edit" id="editBtn">Edit</button>' +
+          '<button class="btn-delete" id="delBtn">Delete</button>' +
+        '</div>' +
+        '<button class="btn-close" id="closeBtn">Close</button>' +
+      '</div></div>';
+    document.getElementById("overlay").onclick = function (ev) { if (ev.target.id === "overlay") root.innerHTML = ""; };
+    document.getElementById("closeBtn").onclick = function () { root.innerHTML = ""; };
+    document.getElementById("copyBtn").onclick = function () {
+      copyToClipboard(buildWhatsAppText(e)).then(function () {
+        showToast("Copied — paste into WhatsApp");
+      }).catch(function () {
+        showToast("Could not copy");
+      });
+    };
+    document.getElementById("editBtn").onclick = function () {
+      formDraft = {
+        code: e.code, location: e.location || "", vehicle: e.vehicle || "", phone: e.phone || "",
+        remarks: e.remarks || "",
+        quantity: String(e.quantity), unit: e.unit, rate: String(e.rate), deduction: e.deduction ? String(e.deduction) : "",
+        _date: e.date, _createdAt: e.createdAt
+      };
+      state.entryType = e.type;
+      state.editingId = e._id;
+      root.innerHTML = "";
+      goView("add");
+    };
+    document.getElementById("delBtn").onclick = function () {
+      if (!confirm("Delete this entry?")) return;
+      removeEntry(e._id).then(function () {
+        root.innerHTML = "";
+        showToast("Entry deleted");
+      });
+    };
+  }
+
+  // ---------- Render: Summary ----------
+  function renderSummary() {
+    var m = document.getElementById("main");
+    var today = todayISO();
+    var monthPrefix = today.slice(0, 7);
+
+    var todayTot = { purchase: 0, sale: 0 };
+    var monthTot = { purchase: 0, sale: 0 };
+    state.entries.forEach(function (e) {
+      if (e.date === today) { todayTot[e.type] += e.amount; }
+      if (e.date && e.date.slice(0, 7) === monthPrefix) { monthTot[e.type] += e.amount; }
+    });
+
+    function card(title, tot) {
+      return '<div class="summary-card"><h3>' + title + '</h3>' +
+        '<div class="summary-line"><span class="lbl">Purchases (In)</span><span class="val purchase">&#8377;' + fmtINR(tot.purchase) + '</span></div>' +
+        '<div class="summary-line"><span class="lbl">Sales (Out)</span><span class="val sale">&#8377;' + fmtINR(tot.sale) + '</span></div>' +
+        '</div>';
+    }
+
+    m.innerHTML = card("Today", todayTot) + card("This month", monthTot) +
+      '<div class="summary-card"><h3>All time</h3>' +
+      '<div class="summary-line"><span class="lbl">Total entries</span><span class="val">' + state.entries.length + '</span></div>' +
+      '</div>';
+  }
+
+  // ---------- Router ----------
+  function goView(v) {
+    state.view = v;
+    updateNav();
+    render();
+  }
+  function render() {
+    updateNav();
+    if (state.view === "add") renderAdd();
+    else if (state.view === "ledger") renderLedger();
+    else if (state.view === "summary") renderSummary();
+  }
+
+  function buildWhatsAppText(e) {
+    var na = "..";
+    var lines = [
+      e.phone || na,
+      e.vehicle || na,
+      e.quantity ? (e.quantity + " Ton") : na,
+      e.code || na,
+      e.remarks || na,
+      e.location || na
+    ];
+    return lines.join("\n\n");
+  }
+
+  function copyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      try {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.focus(); ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        resolve();
+      } catch (err) { reject(err); }
+    });
+  }
+
+  function escHtml(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function escAttr(s) { return escHtml(s); }
+
+  Array.prototype.forEach.call(document.querySelectorAll("nav.bottom button"), function (btn) {
+    btn.onclick = function () { goView(btn.getAttribute("data-view")); };
+  });
+
+  updateHeader();
+  render();
+  initStorage();
+})();
+</script>
+</body>
+</html>
