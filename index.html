@@ -20,10 +20,12 @@
     --ink: #2A211A;
     --ink-soft: #6E5F4D;
     --rule: #D9C7A0;
-    --purchase: #6B4226;
-    --purchase-soft: #E4D3BE;
-    --sale: #375C40;
-    --sale-soft: #D7E4D4;
+    --pending: #A63D2F;
+    --pending-soft: #F0D9D2;
+    --inprocess: #A9790C;
+    --inprocess-soft: #F0E4C2;
+    --completed: #375C40;
+    --completed-soft: #D7E4D4;
     --accent: #B5652E;
     --accent-ink: #FFF9EF;
     --danger: #A63D2F;
@@ -40,10 +42,12 @@
       --ink: #F1E7D6;
       --ink-soft: #B8A88F;
       --rule: #4A3B2A;
-      --purchase: #D19566;
-      --purchase-soft: #3A2A1D;
-      --sale: #85B48D;
-      --sale-soft: #22342A;
+      --pending: #E27A66;
+      --pending-soft: #3A2620;
+      --inprocess: #E3C15A;
+      --inprocess-soft: #3A331A;
+      --completed: #85B48D;
+      --completed-soft: #22342A;
       --accent: #E08A45;
       --accent-ink: #241A0F;
       --danger: #E27A66;
@@ -56,10 +60,12 @@
     --ink: #F1E7D6;
     --ink-soft: #B8A88F;
     --rule: #4A3B2A;
-    --purchase: #D19566;
-    --purchase-soft: #3A2A1D;
-    --sale: #85B48D;
-    --sale-soft: #22342A;
+    --pending: #E27A66;
+    --pending-soft: #3A2620;
+    --inprocess: #E3C15A;
+    --inprocess-soft: #3A331A;
+    --completed: #85B48D;
+    --completed-soft: #22342A;
     --accent: #E08A45;
     --accent-ink: #241A0F;
     --danger: #E27A66;
@@ -117,31 +123,6 @@
     flex: 1;
     padding: 4px 18px 100px;
     overflow-y: auto;
-  }
-  /* ---- Type toggle ---- */
-  .type-toggle {
-    display: flex;
-    gap: 8px;
-    margin: 10px 0 18px;
-  }
-  .type-toggle button {
-    flex: 1;
-    padding: 13px 0;
-    border-radius: 12px;
-    border: 1.5px solid var(--rule);
-    background: var(--panel);
-    color: var(--ink-soft);
-    font-family: "Work Sans", sans-serif;
-    font-weight: 600;
-    font-size: 15px;
-    cursor: pointer;
-    transition: background .15s, border-color .15s, color .15s;
-  }
-  .type-toggle button.active[data-type="purchase"] {
-    background: var(--purchase-soft); border-color: var(--purchase); color: var(--purchase);
-  }
-  .type-toggle button.active[data-type="sale"] {
-    background: var(--sale-soft); border-color: var(--sale); color: var(--sale);
   }
   /* ---- Form ---- */
   .field { margin-bottom: 14px; }
@@ -223,18 +204,21 @@
     cursor: pointer;
   }
   /* ---- Ledger list ---- */
-  .filter-row { display: flex; gap: 8px; margin: 10px 0 14px; }
+  .filter-row { display: flex; gap: 6px; margin: 10px 0 14px; flex-wrap: wrap; }
   .filter-row button {
-    padding: 7px 14px;
+    padding: 7px 12px;
     border-radius: 999px;
     border: 1.5px solid var(--rule);
     background: var(--panel);
     color: var(--ink-soft);
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 600;
     cursor: pointer;
   }
-  .filter-row button.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .filter-row button.active[data-filter="all"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .filter-row button.active[data-filter="pending"] { background: var(--pending-soft); color: var(--pending); border-color: var(--pending); }
+  .filter-row button.active[data-filter="inprocess"] { background: var(--inprocess-soft); color: var(--inprocess); border-color: var(--inprocess); }
+  .filter-row button.active[data-filter="completed"] { background: var(--completed-soft); color: var(--completed); border-color: var(--completed); }
   .search-field { margin-bottom: 14px; }
   .search-field input {
     width: 100%;
@@ -267,14 +251,26 @@
   }
   .entry-row:last-child { border-bottom: none; }
   .bar { width: 4px; align-self: stretch; border-radius: 3px; flex-shrink: 0; }
-  .bar.purchase { background: var(--purchase); }
-  .bar.sale { background: var(--sale); }
+  .bar.pending { background: var(--pending); }
+  .bar.inprocess { background: var(--inprocess); }
+  .bar.completed { background: var(--completed); }
   .entry-main { flex: 1; min-width: 0; }
+  .entry-code-row { display: flex; align-items: center; gap: 7px; }
   .entry-code { font-weight: 700; font-size: 14.5px; }
   .entry-sub { font-size: 12px; color: var(--ink-soft); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .entry-amt { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 15px; text-align: right; white-space: nowrap; }
-  .entry-amt.purchase { color: var(--purchase); }
-  .entry-amt.sale { color: var(--sale); }
+  .status-pill {
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+  }
+  .status-pill.pending { background: var(--pending-soft); color: var(--pending); }
+  .status-pill.inprocess { background: var(--inprocess-soft); color: var(--inprocess); }
+  .status-pill.completed { background: var(--completed-soft); color: var(--completed); }
   .empty-state {
     text-align: center;
     padding: 60px 20px;
@@ -296,11 +292,13 @@
     font-weight: 600;
     color: var(--ink-soft);
   }
-  .summary-line { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 0; }
-  .summary-line .lbl { font-size: 14px; color: var(--ink-soft); }
-  .summary-line .val { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 17px; }
-  .summary-line .val.purchase { color: var(--purchase); }
-  .summary-line .val.sale { color: var(--sale); }
+  .summary-line { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; }
+  .summary-line .lbl { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--ink); }
+  .summary-line .dot { width: 9px; height: 9px; border-radius: 999px; flex-shrink: 0; }
+  .summary-line .dot.pending { background: var(--pending); }
+  .summary-line .dot.inprocess { background: var(--inprocess); }
+  .summary-line .dot.completed { background: var(--completed); }
+  .summary-line .val { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 15px; }
   /* ---- Detail modal ---- */
   .overlay {
     position: fixed; inset: 0;
@@ -318,7 +316,27 @@
     max-height: 85vh;
     overflow-y: auto;
   }
-  .sheet h3 { margin: 0 0 14px; font-family: "Roboto Slab", serif; }
+  .sheet h3 { margin: 0 0 4px; font-family: "Roboto Slab", serif; }
+  .status-toggle {
+    display: flex;
+    gap: 6px;
+    margin: 14px 0 16px;
+  }
+  .status-toggle button {
+    flex: 1;
+    padding: 10px 0;
+    border-radius: 10px;
+    border: 1.5px solid var(--rule);
+    background: var(--panel);
+    color: var(--ink-soft);
+    font-family: "Work Sans", sans-serif;
+    font-weight: 600;
+    font-size: 12.5px;
+    cursor: pointer;
+  }
+  .status-toggle button.active[data-status="pending"] { background: var(--pending-soft); border-color: var(--pending); color: var(--pending); }
+  .status-toggle button.active[data-status="inprocess"] { background: var(--inprocess-soft); border-color: var(--inprocess); color: var(--inprocess); }
+  .status-toggle button.active[data-status="completed"] { background: var(--completed-soft); border-color: var(--completed); color: var(--completed); }
   .detail-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--rule); font-size: 14px; }
   .detail-row span:first-child { color: var(--ink-soft); }
   .sheet-actions { display: flex; gap: 10px; margin-top: 16px; }
@@ -371,12 +389,6 @@
     pointer-events: none;
   }
   .toast.show { opacity: 1; }
-  .offline-note {
-    font-size: 11.5px;
-    color: var(--ink-soft);
-    text-align: center;
-    padding: 4px 0 10px;
-  }
 </style>
 </head>
 <body>
@@ -411,7 +423,6 @@
   // ---------- State ----------
   var state = {
     view: "add",
-    entryType: "purchase",
     entries: [],
     recentCodes: [],
     editingId: null,
@@ -426,8 +437,6 @@
   var LOCAL_KEY = "timberLedgerEntries_v1";
 
   // ===== FIREBASE SETUP =====
-  // Paste the config object from Firebase Console > Project settings > Your apps (Web app) below.
-  // Until you do, the app runs fine on local storage only (per-device, no syncing).
   var firebaseConfig = {
     apiKey: "AIzaSyDTRa_S-s0PxYxqHZ_-zrGgWBbXpDLPvE8",
     authDomain: "timber-ledge-dad.firebaseapp.com",
@@ -437,6 +446,8 @@
     appId: "1:459353054774:web:ab2459bf813e30408b8297"
   };
   // ===========================
+
+  var STATUS_LABEL = { pending: "Pending", inprocess: "In Process", completed: "Completed" };
 
   // ---------- Storage layer ----------
   function loadLocalEntries() {
@@ -544,7 +555,7 @@
     }
   }
 
-  // ---------- Helpers ----------
+  // ---------- Sanitizers ----------
   function sanitizeDigits(v, maxLen) {
     v = v.replace(/[^0-9]/g, "");
     if (maxLen) v = v.slice(0, maxLen);
@@ -560,40 +571,10 @@
     return v.replace(allowSpace ? /[^a-zA-Z0-9 ]/g : /[^a-zA-Z0-9]/g, "");
   }
 
+  // ---------- Helpers ----------
   function todayISO() {
     var d = new Date();
     return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
-  }
-  function dateISOOffset(daysAgo) {
-    var d = new Date();
-    d.setDate(d.getDate() - daysAgo);
-    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
-  }
-  function seedDemoData() {
-    if (!state.storageReady) { showToast("Still setting up — try again in a second"); return; }
-    var demo = [
-      { daysAgo: 0, type: "purchase", code: "LM14", vehicle: "MH18BL4774", phone: "9864934904", quantity: 12.26, rate: 5700, deduction: 0, remarks: "urgent load", location: "Uddhar" },
-      { daysAgo: 0, type: "sale", code: "SAS16", vehicle: "MH26AD1832", phone: "9609258565", quantity: 8.5, rate: 6100, deduction: 0, remarks: "", location: "Chintory" },
-      { daysAgo: 1, type: "purchase", code: "DAR14", vehicle: "MH84834757", phone: "7798352260", quantity: 10.675, rate: 5700, deduction: 1500, remarks: "", location: "Vellon Durvaja" },
-      { daysAgo: 1, type: "sale", code: "G01", vehicle: "MH14U3791", phone: "8808566629", quantity: 6.2, rate: 5900, deduction: 0, remarks: "", location: "Rodhrani" },
-      { daysAgo: 2, type: "purchase", code: "HAS1M", vehicle: "MH24RU8627", phone: "9604255562", quantity: 5.7, rate: 5800, deduction: 0, remarks: "", location: "Chintory" },
-      { daysAgo: 3, type: "sale", code: "LM16", vehicle: "MH26AD3955", phone: "9673991060", quantity: 9.1, rate: 6000, deduction: 0, remarks: "", location: "Ganesh" }
-    ];
-    var chain = Promise.resolve();
-    demo.forEach(function (d, i) {
-      chain = chain.then(function () {
-        var amount = d.quantity * d.rate - d.deduction;
-        var data = {
-          type: d.type, code: d.code, location: d.location, remarks: d.remarks,
-          vehicle: d.vehicle, phone: d.phone, quantity: d.quantity, unit: "Ton",
-          rate: d.rate, deduction: d.deduction, amount: amount,
-          date: dateISOOffset(d.daysAgo),
-          createdAt: Date.now() - d.daysAgo * 86400000 - i * 1000
-        };
-        return addOrUpdateEntry(data, null);
-      });
-    });
-    chain.then(function () { showToast("Demo entries added"); });
   }
   function fmtDateLabel(iso) {
     var d = new Date(iso + "T00:00:00");
@@ -614,310 +595,6 @@
     document.getElementById("todayLabel").textContent = now.toLocaleDateString("en-IN", { weekday: "short", day: "2-digit", month: "short" });
     var todayCount = state.entries.filter(function (e) { return e.date === todayISO(); }).length;
     document.getElementById("todayCount").textContent = todayCount + (todayCount === 1 ? " entry today" : " entries today");
-  }
-
-  // ---------- Render: nav ----------
-  function updateNav() {
-    ["add", "ledger", "summary"].forEach(function (v) {
-      document.getElementById("nav" + v.charAt(0).toUpperCase() + v.slice(1)).classList.toggle("active", state.view === v);
-    });
-  }
-
-  // ---------- Render: Add form ----------
-  var formDraft = { code: "", location: "", vehicle: "", phone: "", quantity: "", unit: "Ton", rate: "", deduction: "", remarks: "" };
-
-  function resetForm() {
-    formDraft = { code: "", location: "", vehicle: "", phone: "", quantity: "", unit: "Ton", rate: "", deduction: "", remarks: "" };
-    state.editingId = null;
-  }
-
-  function renderAdd() {
-    var m = document.getElementById("main");
-    var qty = parseFloat(formDraft.quantity) || 0;
-    var rate = parseFloat(formDraft.rate) || 0;
-    var ded = parseFloat(formDraft.deduction) || 0;
-    var gross = qty * rate;
-    var amount = gross - ded;
-
-    var chipsHtml = state.recentCodes.map(function (c) {
-      return '<span class="chip" data-code="' + escAttr(c) + '">' + escHtml(c) + '</span>';
-    }).join("");
-
-    m.innerHTML =
-      '<div class="type-toggle">' +
-        '<button data-type="purchase" class="' + (state.entryType === "purchase" ? "active" : "") + '">Purchase (In)</button>' +
-        '<button data-type="sale" class="' + (state.entryType === "sale" ? "active" : "") + '">Sale (Out)</button>' +
-      '</div>' +
-      (state.editingId ? '<div class="cancel-edit" id="cancelEditTop">Editing entry &middot; tap to cancel</div>' : '') +
-      '<div class="field"><label>Code</label>' +
-        (chipsHtml ? '<div class="chips">' + chipsHtml + '</div>' : '') +
-        '<input id="fCode" type="text" placeholder="e.g. LM14" value="' + escAttr(formDraft.code) + '" autocapitalize="characters" maxlength="12">' +
-      '</div>' +
-      '<div class="field"><label>Remarks <span class="opt">(optional)</span></label>' +
-        '<input id="fRemarks" type="text" placeholder="e.g. loose logs, urgent" value="' + escAttr(formDraft.remarks) + '">' +
-      '</div>' +
-      '<div class="field"><label>Location <span class="opt">(optional)</span></label>' +
-        '<input id="fLocation" type="text" placeholder="e.g. Uddhar Durvaja" value="' + escAttr(formDraft.location) + '">' +
-      '</div>' +
-      '<div class="row2">' +
-        '<div class="field"><label>Vehicle no. <span class="opt">(optional)</span></label>' +
-          '<input id="fVehicle" type="text" placeholder="MH 84 83 4757" value="' + escAttr(formDraft.vehicle) + '" autocapitalize="characters" maxlength="16">' +
-        '</div>' +
-        '<div class="field"><label>Phone <span class="opt">(optional)</span></label>' +
-          '<input id="fPhone" type="tel" inputmode="numeric" placeholder="9864934904" value="' + escAttr(formDraft.phone) + '" maxlength="10">' +
-        '</div>' +
-      '</div>' +
-      '<div class="row2">' +
-        '<div class="field"><label>Quantity (Tons)</label>' +
-          '<input id="fQuantity" type="text" inputmode="decimal" placeholder="0" value="' + escAttr(formDraft.quantity) + '">' +
-        '</div>' +
-        '<div class="field"><label>Rate <span class="opt">(per Ton)</span></label>' +
-          '<input id="fRate" type="text" inputmode="decimal" placeholder="0" value="' + escAttr(formDraft.rate) + '">' +
-        '</div>' +
-      '</div>' +
-      '<div class="field"><label>Deduction <span class="opt">(optional)</span></label>' +
-        '<input id="fDeduction" type="text" inputmode="decimal" placeholder="0" value="' + escAttr(formDraft.deduction) + '">' +
-      '</div>' +
-      '<div class="calc-box">' +
-        '<div class="eq">' + (qty || rate ? (qty + ' ' + formDraft.unit + ' &times; &#8377;' + rate + (ded ? ' &minus; &#8377;' + ded : '')) : 'Enter quantity &amp; rate') + '</div>' +
-        '<div class="amount"><span class="cur">&#8377;</span>' + fmtINR(amount) + '</div>' +
-      '</div>' +
-      '<button class="save-btn" id="saveBtn"' + (!state.storageReady ? ' disabled style="opacity:.5"' : '') + '>' + (!state.storageReady ? "Loading…" : (state.editingId ? "Update Entry" : "Save Entry")) + '</button>' +
-      (state.editingId ? '<div class="cancel-edit" id="cancelEditBottom">Cancel edit</div>' : '');
-
-    // wire events
-    document.getElementById("fCode").oninput = function (e) {
-      var v = sanitizeAlphaNum(e.target.value, false);
-      e.target.value = v; formDraft.code = v;
-    };
-    document.getElementById("fRemarks").oninput = function (e) { formDraft.remarks = e.target.value; };
-    document.getElementById("fLocation").oninput = function (e) { formDraft.location = e.target.value; };
-    document.getElementById("fVehicle").oninput = function (e) {
-      var v = sanitizeAlphaNum(e.target.value, true);
-      e.target.value = v; formDraft.vehicle = v;
-    };
-    document.getElementById("fPhone").oninput = function (e) {
-      var v = sanitizeDigits(e.target.value, 10);
-      e.target.value = v; formDraft.phone = v;
-    };
-    document.getElementById("fQuantity").oninput = function (e) { formDraft.quantity = sanitizeDecimal(e.target.value); renderAdd(); restoreFocus("fQuantity"); };
-    document.getElementById("fRate").oninput = function (e) { formDraft.rate = sanitizeDecimal(e.target.value); renderAdd(); restoreFocus("fRate"); };
-    document.getElementById("fDeduction").oninput = function (e) { formDraft.deduction = sanitizeDecimal(e.target.value); renderAdd(); restoreFocus("fDeduction"); };
-
-    Array.prototype.forEach.call(document.querySelectorAll(".type-toggle button"), function (btn) {
-      btn.onclick = function () { state.entryType = btn.getAttribute("data-type"); renderAdd(); };
-    });
-    Array.prototype.forEach.call(document.querySelectorAll(".chip"), function (chip) {
-      chip.onclick = function () { formDraft.code = chip.getAttribute("data-code"); renderAdd(); };
-    });
-    document.getElementById("saveBtn").onclick = handleSave;
-    var ce1 = document.getElementById("cancelEditTop");
-    var ce2 = document.getElementById("cancelEditBottom");
-    if (ce1) ce1.onclick = function () { resetForm(); renderAdd(); };
-    if (ce2) ce2.onclick = function () { resetForm(); renderAdd(); };
-  }
-
-  function restoreFocus(id) {
-    var el = document.getElementById(id);
-    if (el) { el.focus(); var v = el.value; el.value = ""; el.value = v; }
-  }
-
-  function handleSave() {
-    if (!state.storageReady) { showToast("Still setting up — try again in a second"); return; }
-    if (!formDraft.code.trim()) { showToast("Enter a code"); return; }
-    var qty = parseFloat(formDraft.quantity) || 0;
-    var rate = parseFloat(formDraft.rate) || 0;
-    if (!qty || !rate) { showToast("Enter quantity and rate"); return; }
-    var ded = parseFloat(formDraft.deduction) || 0;
-    var amount = qty * rate - ded;
-
-    var data = {
-      type: state.entryType,
-      code: formDraft.code.trim(),
-      location: formDraft.location.trim(),
-      remarks: formDraft.remarks.trim(),
-      vehicle: formDraft.vehicle.trim(),
-      phone: formDraft.phone.trim(),
-      quantity: qty,
-      unit: formDraft.unit,
-      rate: rate,
-      deduction: ded,
-      amount: amount,
-      date: state.editingId && formDraft._date ? formDraft._date : todayISO(),
-      createdAt: state.editingId && formDraft._createdAt ? formDraft._createdAt : Date.now()
-    };
-
-    addOrUpdateEntry(data, state.editingId).then(function () {
-      showToast(state.editingId ? "Entry updated" : "Entry saved");
-      resetForm();
-      renderAdd();
-    }).catch(function () {
-      showToast("Could not save — try again");
-    });
-  }
-
-  // ---------- Render: Ledger ----------
-  function renderLedger() {
-    var m = document.getElementById("main");
-    var filtered = state.entries.filter(function (e) {
-      if (state.ledgerFilter !== "all" && e.type !== state.ledgerFilter) return false;
-      if (state.searchQuery) {
-        var q = state.searchQuery.toLowerCase();
-        var hay = ((e.code || "") + " " + (e.location || "") + " " + (e.vehicle || "")).toLowerCase();
-        if (hay.indexOf(q) === -1) return false;
-      }
-      return true;
-    });
-
-    var groups = {};
-    var order = [];
-    filtered.forEach(function (e) {
-      if (!groups[e.date]) { groups[e.date] = []; order.push(e.date); }
-      groups[e.date].push(e);
-    });
-    order.sort(function (a, b) { return a < b ? 1 : -1; });
-
-    var html =
-      '<div class="filter-row">' +
-        ["all", "purchase", "sale"].map(function (f) {
-          var lbl = f === "all" ? "All" : f === "purchase" ? "Purchase" : "Sale";
-          return '<button data-filter="' + f + '" class="' + (state.ledgerFilter === f ? "active" : "") + '">' + lbl + '</button>';
-        }).join("") +
-      '</div>' +
-      '<div class="search-field"><input id="searchInput" type="text" placeholder="Search code, location, vehicle" value="' + escAttr(state.searchQuery) + '"></div>' +
-      '<div style="text-align:center;margin:-6px 0 14px"><span id="demoBtn" style="font-size:11.5px;color:var(--ink-soft);text-decoration:underline;cursor:pointer">Load demo entries (preview multi-day view)</span></div>';
-
-    if (order.length === 0) {
-      html += '<div class="empty-state">No entries yet.<br>Add your first one from the Add Entry tab.</div>';
-    } else {
-      order.forEach(function (date) {
-        var dayEntries = groups[date];
-        var dayTotal = { purchase: 0, sale: 0 };
-        dayEntries.forEach(function (e) { dayTotal[e.type] += e.amount; });
-        html += '<div class="day-group"><div class="day-label"><span>' + fmtDateLabel(date) + '</span><span>' +
-          (dayTotal.purchase ? 'In &#8377;' + fmtINR(dayTotal.purchase) + '  ' : '') +
-          (dayTotal.sale ? 'Out &#8377;' + fmtINR(dayTotal.sale) : '') +
-          '</span></div>';
-        dayEntries.forEach(function (e) {
-          html += '<div class="entry-row" data-id="' + escAttr(e._id) + '">' +
-            '<div class="bar ' + e.type + '"></div>' +
-            '<div class="entry-main"><div class="entry-code">' + escHtml(e.code) + '</div>' +
-            '<div class="entry-sub">' + escHtml([e.remarks, e.location, e.vehicle].filter(Boolean).join(" · ") || "—") + '</div></div>' +
-            '<div class="entry-amt ' + e.type + '">&#8377;' + fmtINR(e.amount) + '</div>' +
-          '</div>';
-        });
-        html += '</div>';
-      });
-    }
-
-    m.innerHTML = html;
-
-    Array.prototype.forEach.call(document.querySelectorAll(".filter-row button"), function (btn) {
-      btn.onclick = function () { state.ledgerFilter = btn.getAttribute("data-filter"); renderLedger(); };
-    });
-    document.getElementById("searchInput").oninput = function (e) {
-      state.searchQuery = e.target.value;
-      renderLedger();
-      var el = document.getElementById("searchInput");
-      el.focus(); el.selectionStart = el.selectionEnd = el.value.length;
-    };
-    Array.prototype.forEach.call(document.querySelectorAll(".entry-row"), function (row) {
-      row.onclick = function () { openDetail(row.getAttribute("data-id")); };
-    });
-    var demoBtn = document.getElementById("demoBtn");
-    if (demoBtn) demoBtn.onclick = seedDemoData;
-  }
-
-  function openDetail(id) {
-    var e = state.entries.find(function (x) { return x._id === id; });
-    if (!e) return;
-    var root = document.getElementById("modalRoot");
-    root.innerHTML =
-      '<div class="overlay" id="overlay"><div class="sheet">' +
-        '<h3>' + escHtml(e.code) + ' &middot; ' + (e.type === "purchase" ? "Purchase" : "Sale") + '</h3>' +
-        '<div class="detail-row"><span>Date</span><span>' + fmtDateLabel(e.date) + '</span></div>' +
-        (e.remarks ? '<div class="detail-row"><span>Remarks</span><span>' + escHtml(e.remarks) + '</span></div>' : '') +
-        (e.location ? '<div class="detail-row"><span>Location</span><span>' + escHtml(e.location) + '</span></div>' : '') +
-        (e.vehicle ? '<div class="detail-row"><span>Vehicle</span><span>' + escHtml(e.vehicle) + '</span></div>' : '') +
-        (e.phone ? '<div class="detail-row"><span>Phone</span><span>' + escHtml(e.phone) + '</span></div>' : '') +
-        '<div class="detail-row"><span>Quantity</span><span>' + e.quantity + ' ' + escHtml(e.unit) + '</span></div>' +
-        '<div class="detail-row"><span>Rate</span><span>&#8377;' + fmtINR(e.rate) + '</span></div>' +
-        (e.deduction ? '<div class="detail-row"><span>Deduction</span><span>&#8377;' + fmtINR(e.deduction) + '</span></div>' : '') +
-        '<div class="detail-row"><span>Amount</span><span><b>&#8377;' + fmtINR(e.amount) + '</b></span></div>' +
-        '<div class="sheet-actions">' +
-          '<button class="btn-edit" id="copyBtn">Copy</button>' +
-          '<button class="btn-edit" id="editBtn">Edit</button>' +
-          '<button class="btn-delete" id="delBtn">Delete</button>' +
-        '</div>' +
-        '<button class="btn-close" id="closeBtn">Close</button>' +
-      '</div></div>';
-    document.getElementById("overlay").onclick = function (ev) { if (ev.target.id === "overlay") root.innerHTML = ""; };
-    document.getElementById("closeBtn").onclick = function () { root.innerHTML = ""; };
-    document.getElementById("copyBtn").onclick = function () {
-      copyToClipboard(buildWhatsAppText(e)).then(function () {
-        showToast("Copied — paste into WhatsApp");
-      }).catch(function () {
-        showToast("Could not copy");
-      });
-    };
-    document.getElementById("editBtn").onclick = function () {
-      formDraft = {
-        code: e.code, location: e.location || "", vehicle: e.vehicle || "", phone: e.phone || "",
-        remarks: e.remarks || "",
-        quantity: String(e.quantity), unit: e.unit, rate: String(e.rate), deduction: e.deduction ? String(e.deduction) : "",
-        _date: e.date, _createdAt: e.createdAt
-      };
-      state.entryType = e.type;
-      state.editingId = e._id;
-      root.innerHTML = "";
-      goView("add");
-    };
-    document.getElementById("delBtn").onclick = function () {
-      if (!confirm("Delete this entry?")) return;
-      removeEntry(e._id).then(function () {
-        root.innerHTML = "";
-        showToast("Entry deleted");
-      });
-    };
-  }
-
-  // ---------- Render: Summary ----------
-  function renderSummary() {
-    var m = document.getElementById("main");
-    var today = todayISO();
-    var monthPrefix = today.slice(0, 7);
-
-    var todayTot = { purchase: 0, sale: 0 };
-    var monthTot = { purchase: 0, sale: 0 };
-    state.entries.forEach(function (e) {
-      if (e.date === today) { todayTot[e.type] += e.amount; }
-      if (e.date && e.date.slice(0, 7) === monthPrefix) { monthTot[e.type] += e.amount; }
-    });
-
-    function card(title, tot) {
-      return '<div class="summary-card"><h3>' + title + '</h3>' +
-        '<div class="summary-line"><span class="lbl">Purchases (In)</span><span class="val purchase">&#8377;' + fmtINR(tot.purchase) + '</span></div>' +
-        '<div class="summary-line"><span class="lbl">Sales (Out)</span><span class="val sale">&#8377;' + fmtINR(tot.sale) + '</span></div>' +
-        '</div>';
-    }
-
-    m.innerHTML = card("Today", todayTot) + card("This month", monthTot) +
-      '<div class="summary-card"><h3>All time</h3>' +
-      '<div class="summary-line"><span class="lbl">Total entries</span><span class="val">' + state.entries.length + '</span></div>' +
-      '</div>';
-  }
-
-  // ---------- Router ----------
-  function goView(v) {
-    state.view = v;
-    updateNav();
-    render();
-  }
-  function render() {
-    updateNav();
-    if (state.view === "add") renderAdd();
-    else if (state.view === "ledger") renderLedger();
-    else if (state.view === "summary") renderSummary();
   }
 
   function buildWhatsAppText(e) {
@@ -958,6 +635,323 @@
     });
   }
   function escAttr(s) { return escHtml(s); }
+
+  // ---------- Render: nav ----------
+  function updateNav() {
+    ["add", "ledger", "summary"].forEach(function (v) {
+      document.getElementById("nav" + v.charAt(0).toUpperCase() + v.slice(1)).classList.toggle("active", state.view === v);
+    });
+  }
+
+  // ---------- Render: Add form ----------
+  var formDraft = { code: "", location: "", vehicle: "", phone: "", quantity: "", unit: "Ton", rate: "", remarks: "" };
+
+  function resetForm() {
+    formDraft = { code: "", location: "", vehicle: "", phone: "", quantity: "", unit: "Ton", rate: "", remarks: "" };
+    state.editingId = null;
+  }
+
+  function renderAdd() {
+    var m = document.getElementById("main");
+    var qty = parseFloat(formDraft.quantity) || 0;
+    var rate = parseFloat(formDraft.rate) || 0;
+    var amount = qty * rate;
+
+    var chipsHtml = state.recentCodes.map(function (c) {
+      return '<span class="chip" data-code="' + escAttr(c) + '">' + escHtml(c) + '</span>';
+    }).join("");
+
+    m.innerHTML =
+      (state.editingId ? '<div class="cancel-edit" id="cancelEditTop">Editing entry &middot; tap to cancel</div>' : '') +
+      '<div class="field"><label>Code</label>' +
+        (chipsHtml ? '<div class="chips">' + chipsHtml + '</div>' : '') +
+        '<input id="fCode" type="text" placeholder="e.g. LM14" value="' + escAttr(formDraft.code) + '" autocapitalize="characters" maxlength="12">' +
+      '</div>' +
+      '<div class="field"><label>Remarks <span class="opt">(optional)</span></label>' +
+        '<input id="fRemarks" type="text" placeholder="e.g. loose logs, urgent" value="' + escAttr(formDraft.remarks) + '">' +
+      '</div>' +
+      '<div class="field"><label>Location <span class="opt">(optional)</span></label>' +
+        '<input id="fLocation" type="text" placeholder="e.g. Uddhar Durvaja" value="' + escAttr(formDraft.location) + '">' +
+      '</div>' +
+      '<div class="row2">' +
+        '<div class="field"><label>Vehicle no. <span class="opt">(optional)</span></label>' +
+          '<input id="fVehicle" type="text" placeholder="MH 84 83 4757" value="' + escAttr(formDraft.vehicle) + '" autocapitalize="characters" maxlength="16">' +
+        '</div>' +
+        '<div class="field"><label>Phone <span class="opt">(optional)</span></label>' +
+          '<input id="fPhone" type="tel" inputmode="numeric" placeholder="9864934904" value="' + escAttr(formDraft.phone) + '" maxlength="10">' +
+        '</div>' +
+      '</div>' +
+      '<div class="row2">' +
+        '<div class="field"><label>Quantity (Tons)</label>' +
+          '<input id="fQuantity" type="text" inputmode="decimal" placeholder="0" value="' + escAttr(formDraft.quantity) + '">' +
+        '</div>' +
+        '<div class="field"><label>Rate <span class="opt">(per Ton)</span></label>' +
+          '<input id="fRate" type="text" inputmode="decimal" placeholder="0" value="' + escAttr(formDraft.rate) + '">' +
+        '</div>' +
+      '</div>' +
+      '<div class="calc-box">' +
+        '<div class="eq">' + (qty || rate ? (qty + ' Ton &times; &#8377;' + rate) : 'Enter quantity &amp; rate') + '</div>' +
+        '<div class="amount"><span class="cur">&#8377;</span>' + fmtINR(amount) + '</div>' +
+      '</div>' +
+      '<button class="save-btn" id="saveBtn"' + (!state.storageReady ? ' disabled style="opacity:.5"' : '') + '>' + (!state.storageReady ? "Loading…" : (state.editingId ? "Update Entry" : "Save Entry")) + '</button>' +
+      (state.editingId ? '<div class="cancel-edit" id="cancelEditBottom">Cancel edit</div>' : '');
+
+    document.getElementById("fCode").oninput = function (e) {
+      var v = sanitizeAlphaNum(e.target.value, false);
+      e.target.value = v; formDraft.code = v;
+    };
+    document.getElementById("fRemarks").oninput = function (e) { formDraft.remarks = e.target.value; };
+    document.getElementById("fLocation").oninput = function (e) { formDraft.location = e.target.value; };
+    document.getElementById("fVehicle").oninput = function (e) {
+      var v = sanitizeAlphaNum(e.target.value, true);
+      e.target.value = v; formDraft.vehicle = v;
+    };
+    document.getElementById("fPhone").oninput = function (e) {
+      var v = sanitizeDigits(e.target.value, 10);
+      e.target.value = v; formDraft.phone = v;
+    };
+    document.getElementById("fQuantity").oninput = function (e) { formDraft.quantity = sanitizeDecimal(e.target.value); renderAdd(); restoreFocus("fQuantity"); };
+    document.getElementById("fRate").oninput = function (e) { formDraft.rate = sanitizeDecimal(e.target.value); renderAdd(); restoreFocus("fRate"); };
+
+    Array.prototype.forEach.call(document.querySelectorAll(".chip"), function (chip) {
+      chip.onclick = function () { formDraft.code = chip.getAttribute("data-code"); renderAdd(); };
+    });
+    document.getElementById("saveBtn").onclick = handleSave;
+    var ce1 = document.getElementById("cancelEditTop");
+    var ce2 = document.getElementById("cancelEditBottom");
+    if (ce1) ce1.onclick = function () { resetForm(); renderAdd(); };
+    if (ce2) ce2.onclick = function () { resetForm(); renderAdd(); };
+  }
+
+  function restoreFocus(id) {
+    var el = document.getElementById(id);
+    if (el) { el.focus(); var v = el.value; el.value = ""; el.value = v; }
+  }
+
+  function handleSave() {
+    if (!state.storageReady) { showToast("Still setting up — try again in a second"); return; }
+    if (!formDraft.code.trim()) { showToast("Enter a code"); return; }
+    var qty = parseFloat(formDraft.quantity) || 0;
+    var rate = parseFloat(formDraft.rate) || 0;
+    if (!qty || !rate) { showToast("Enter quantity and rate"); return; }
+    var amount = qty * rate;
+
+    var existing = state.editingId ? state.entries.find(function (x) { return x._id === state.editingId; }) : null;
+
+    var data = {
+      code: formDraft.code.trim(),
+      location: formDraft.location.trim(),
+      remarks: formDraft.remarks.trim(),
+      vehicle: formDraft.vehicle.trim(),
+      phone: formDraft.phone.trim(),
+      quantity: qty,
+      unit: formDraft.unit,
+      rate: rate,
+      amount: amount,
+      status: existing ? (existing.status || "pending") : "pending",
+      date: existing ? existing.date : todayISO(),
+      createdAt: existing ? existing.createdAt : Date.now()
+    };
+
+    addOrUpdateEntry(data, state.editingId).then(function () {
+      showToast(state.editingId ? "Entry updated" : "Entry saved");
+      resetForm();
+      renderAdd();
+    }).catch(function () {
+      showToast("Could not save — try again");
+    });
+  }
+
+  // ---------- Render: Ledger ----------
+  function renderLedger() {
+    var m = document.getElementById("main");
+    var filtered = state.entries.filter(function (e) {
+      var s = e.status || "pending";
+      if (state.ledgerFilter !== "all" && s !== state.ledgerFilter) return false;
+      if (state.searchQuery) {
+        var q = state.searchQuery.toLowerCase();
+        var hay = ((e.code || "") + " " + (e.location || "") + " " + (e.vehicle || "") + " " + (e.remarks || "")).toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+
+    var groups = {};
+    var order = [];
+    filtered.forEach(function (e) {
+      if (!groups[e.date]) { groups[e.date] = []; order.push(e.date); }
+      groups[e.date].push(e);
+    });
+    order.sort(function (a, b) { return a < b ? 1 : -1; });
+
+    var html =
+      '<div class="filter-row">' +
+        ["all", "pending", "inprocess", "completed"].map(function (f) {
+          var lbl = f === "all" ? "All" : STATUS_LABEL[f];
+          return '<button data-filter="' + f + '" class="' + (state.ledgerFilter === f ? "active" : "") + '">' + lbl + '</button>';
+        }).join("") +
+      '</div>' +
+      '<div class="search-field"><input id="searchInput" type="text" placeholder="Search code, location, vehicle" value="' + escAttr(state.searchQuery) + '"></div>';
+
+    if (order.length === 0) {
+      html += '<div class="empty-state">No entries yet.<br>Add your first one from the Add Entry tab.</div>';
+    } else {
+      order.forEach(function (date) {
+        var dayEntries = groups[date];
+        var dayTotal = 0;
+        dayEntries.forEach(function (e) { dayTotal += e.amount; });
+        html += '<div class="day-group"><div class="day-label"><span>' + fmtDateLabel(date) + '</span><span>&#8377;' + fmtINR(dayTotal) + ' total</span></div>';
+        dayEntries.forEach(function (e) {
+          var s = e.status || "pending";
+          html += '<div class="entry-row" data-id="' + escAttr(e._id) + '">' +
+            '<div class="bar ' + s + '"></div>' +
+            '<div class="entry-main">' +
+              '<div class="entry-code-row"><span class="entry-code">' + escHtml(e.code) + '</span><span class="status-pill ' + s + '">' + STATUS_LABEL[s] + '</span></div>' +
+              '<div class="entry-sub">' + escHtml([e.remarks, e.location, e.vehicle].filter(Boolean).join(" · ") || "—") + '</div>' +
+            '</div>' +
+            '<div class="entry-amt">&#8377;' + fmtINR(e.amount) + '</div>' +
+          '</div>';
+        });
+        html += '</div>';
+      });
+    }
+
+    m.innerHTML = html;
+
+    Array.prototype.forEach.call(document.querySelectorAll(".filter-row button"), function (btn) {
+      btn.onclick = function () { state.ledgerFilter = btn.getAttribute("data-filter"); renderLedger(); };
+    });
+    document.getElementById("searchInput").oninput = function (e) {
+      state.searchQuery = e.target.value;
+      renderLedger();
+      var el = document.getElementById("searchInput");
+      el.focus(); el.selectionStart = el.selectionEnd = el.value.length;
+    };
+    Array.prototype.forEach.call(document.querySelectorAll(".entry-row"), function (row) {
+      row.onclick = function () { openDetail(row.getAttribute("data-id")); };
+    });
+  }
+
+  function updateEntryStatus(e, status) {
+    var data = {
+      code: e.code, location: e.location || "", remarks: e.remarks || "",
+      vehicle: e.vehicle || "", phone: e.phone || "",
+      quantity: e.quantity, unit: e.unit || "Ton", rate: e.rate,
+      amount: e.amount, date: e.date, status: status, createdAt: e.createdAt
+    };
+    addOrUpdateEntry(data, e._id).then(function () {
+      showToast("Marked " + STATUS_LABEL[status]);
+      openDetail(e._id);
+    });
+  }
+
+  function openDetail(id) {
+    var e = state.entries.find(function (x) { return x._id === id; });
+    if (!e) return;
+    var s = e.status || "pending";
+    var root = document.getElementById("modalRoot");
+    root.innerHTML =
+      '<div class="overlay" id="overlay"><div class="sheet">' +
+        '<h3>' + escHtml(e.code) + '</h3>' +
+        '<div class="status-toggle">' +
+          ["pending", "inprocess", "completed"].map(function (st) {
+            return '<button data-status="' + st + '" class="' + (s === st ? "active" : "") + '">' + STATUS_LABEL[st] + '</button>';
+          }).join("") +
+        '</div>' +
+        '<div class="detail-row"><span>Date</span><span>' + fmtDateLabel(e.date) + '</span></div>' +
+        (e.remarks ? '<div class="detail-row"><span>Remarks</span><span>' + escHtml(e.remarks) + '</span></div>' : '') +
+        (e.location ? '<div class="detail-row"><span>Location</span><span>' + escHtml(e.location) + '</span></div>' : '') +
+        (e.vehicle ? '<div class="detail-row"><span>Vehicle</span><span>' + escHtml(e.vehicle) + '</span></div>' : '') +
+        (e.phone ? '<div class="detail-row"><span>Phone</span><span>' + escHtml(e.phone) + '</span></div>' : '') +
+        '<div class="detail-row"><span>Quantity</span><span>' + e.quantity + ' ' + escHtml(e.unit) + '</span></div>' +
+        '<div class="detail-row"><span>Rate</span><span>&#8377;' + fmtINR(e.rate) + '</span></div>' +
+        '<div class="detail-row"><span>Amount</span><span><b>&#8377;' + fmtINR(e.amount) + '</b></span></div>' +
+        '<div class="sheet-actions">' +
+          '<button class="btn-edit" id="copyBtn">Copy</button>' +
+          '<button class="btn-edit" id="editBtn">Edit</button>' +
+          '<button class="btn-delete" id="delBtn">Delete</button>' +
+        '</div>' +
+        '<button class="btn-close" id="closeBtn">Close</button>' +
+      '</div></div>';
+
+    Array.prototype.forEach.call(document.querySelectorAll(".status-toggle button"), function (btn) {
+      btn.onclick = function () { updateEntryStatus(e, btn.getAttribute("data-status")); };
+    });
+    document.getElementById("overlay").onclick = function (ev) { if (ev.target.id === "overlay") root.innerHTML = ""; };
+    document.getElementById("closeBtn").onclick = function () { root.innerHTML = ""; };
+    document.getElementById("copyBtn").onclick = function () {
+      copyToClipboard(buildWhatsAppText(e)).then(function () {
+        showToast("Copied — paste into WhatsApp");
+      }).catch(function () {
+        showToast("Could not copy");
+      });
+    };
+    document.getElementById("editBtn").onclick = function () {
+      formDraft = {
+        code: e.code, location: e.location || "", vehicle: e.vehicle || "", phone: e.phone || "",
+        remarks: e.remarks || "",
+        quantity: String(e.quantity), unit: e.unit, rate: String(e.rate)
+      };
+      state.editingId = e._id;
+      root.innerHTML = "";
+      goView("add");
+    };
+    document.getElementById("delBtn").onclick = function () {
+      if (!confirm("Delete this entry?")) return;
+      removeEntry(e._id).then(function () {
+        root.innerHTML = "";
+        showToast("Entry deleted");
+      });
+    };
+  }
+
+  // ---------- Render: Summary ----------
+  function statusTotals(list) {
+    var t = { pending: { count: 0, amount: 0 }, inprocess: { count: 0, amount: 0 }, completed: { count: 0, amount: 0 } };
+    list.forEach(function (e) {
+      var s = e.status || "pending";
+      t[s].count += 1;
+      t[s].amount += e.amount;
+    });
+    return t;
+  }
+
+  function renderSummary() {
+    var m = document.getElementById("main");
+    var today = todayISO();
+    var monthPrefix = today.slice(0, 7);
+
+    var todayList = state.entries.filter(function (e) { return e.date === today; });
+    var monthList = state.entries.filter(function (e) { return e.date && e.date.slice(0, 7) === monthPrefix; });
+    var todayTot = statusTotals(todayList);
+    var monthTot = statusTotals(monthList);
+
+    function card(title, tot) {
+      return '<div class="summary-card"><h3>' + title + '</h3>' +
+        ["pending", "inprocess", "completed"].map(function (s) {
+          return '<div class="summary-line"><span class="lbl"><span class="dot ' + s + '"></span>' + STATUS_LABEL[s] + ' (' + tot[s].count + ')</span><span class="val">&#8377;' + fmtINR(tot[s].amount) + '</span></div>';
+        }).join("") +
+        '</div>';
+    }
+
+    m.innerHTML = card("Today", todayTot) + card("This month", monthTot) +
+      '<div class="summary-card"><h3>All time</h3>' +
+      '<div class="summary-line"><span class="lbl">Total entries</span><span class="val">' + state.entries.length + '</span></div>' +
+      '</div>';
+  }
+
+  // ---------- Router ----------
+  function goView(v) {
+    state.view = v;
+    updateNav();
+    render();
+  }
+  function render() {
+    updateNav();
+    if (state.view === "add") renderAdd();
+    else if (state.view === "ledger") renderLedger();
+    else if (state.view === "summary") renderSummary();
+  }
 
   Array.prototype.forEach.call(document.querySelectorAll("nav.bottom button"), function (btn) {
     btn.onclick = function () { goView(btn.getAttribute("data-view")); };
