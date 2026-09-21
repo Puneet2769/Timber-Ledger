@@ -592,6 +592,7 @@
       e.vehicle || na,
       e.quantity ? (e.quantity + " Ton") : na,
       e.code || na,
+      e.labour || na,
       e.remarks || na,
       e.location || na
     ];
@@ -809,7 +810,7 @@
         var dayEntries = groups[date];
         var dayQty = 0;
         dayEntries.forEach(function (e) { dayQty += (parseFloat(e.quantity) || 0); });
-        html += '<div class="day-group"><div class="day-label"><span>' + fmtDateLabel(date) + '</span><span>' + dayQty + ' Ton total</span></div>';
+        html += '<div class="day-group"><div class="day-label"><span>' + fmtDateLabel(date) + '</span><span>' + dayQty.toFixed(2) + ' Ton total</span></div>';
         dayEntries.forEach(function (e) {
           var s = e.status || "pending";
           html += '<div class="entry-row" data-id="' + escAttr(e._id) + '">' +
