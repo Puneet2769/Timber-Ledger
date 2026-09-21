@@ -96,52 +96,52 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: calc(env(safe-area-inset-top, 0px) + 16px) 18px 12px;
+    padding: calc(env(safe-area-inset-top, 0px) + 12px) 18px 8px;
     gap: 12px;
   }
   .wordmark {
     font-family: "Roboto Slab", serif;
     font-weight: 700;
-    font-size: 21px;
+    font-size: 19px;
     letter-spacing: -0.01em;
     line-height: 1.1;
   }
-  .wordmark span { display: block; font-family: "Work Sans", sans-serif; font-weight: 500; font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+  .wordmark span { display: block; font-family: "Work Sans", sans-serif; font-weight: 500; font-size: 11px; color: var(--ink-soft); margin-top: 2px; }
   .date-box {
     border: 1.5px solid var(--rule);
     border-radius: 8px;
-    padding: 6px 10px;
+    padding: 5px 9px;
     text-align: right;
     font-family: "JetBrains Mono", monospace;
-    font-size: 11px;
-    line-height: 1.5;
+    font-size: 10.5px;
+    line-height: 1.4;
     color: var(--ink-soft);
     background: var(--panel);
   }
-  .date-box b { color: var(--ink); font-size: 12px; display: block; }
+  .date-box b { color: var(--ink); font-size: 11.5px; display: block; }
   main {
     flex: 1;
-    padding: 4px 18px 100px;
+    padding: 2px 18px 100px;
     overflow-y: auto;
   }
   /* ---- Form ---- */
-  .field { margin-bottom: 14px; }
+  .field { margin-bottom: 11px; }
   .field label {
     display: block;
-    font-size: 12.5px;
+    font-size: 12px;
     font-weight: 600;
     color: var(--ink-soft);
-    margin-bottom: 5px;
+    margin-bottom: 4px;
   }
   .field .opt { font-weight: 400; color: var(--ink-soft); opacity: .8; }
   .field input, .field select {
     width: 100%;
-    padding: 12px 13px;
+    padding: 10px 12px;
     border-radius: 10px;
     border: 1.5px solid var(--rule);
     background: var(--panel);
     color: var(--ink);
-    font-size: 16px;
+    font-size: 15.5px;
     font-family: "Work Sans", sans-serif;
   }
   .field input:focus, .field select:focus {
@@ -150,40 +150,20 @@
   }
   .row2 { display: flex; gap: 10px; }
   .row2 .field { flex: 1; }
-  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 7px; }
   .chip {
-    padding: 6px 11px;
+    padding: 5px 10px;
     border-radius: 999px;
     background: var(--panel);
     border: 1px solid var(--rule);
-    font-size: 12.5px;
+    font-size: 12px;
     font-family: "JetBrains Mono", monospace;
     color: var(--ink-soft);
     cursor: pointer;
   }
-  .calc-box {
-    border: 1.5px dashed var(--rule);
-    border-radius: 12px;
-    padding: 14px 16px;
-    margin: 4px 0 18px;
-    background: var(--panel);
-  }
-  .calc-box .eq {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 13px;
-    color: var(--ink-soft);
-    margin-bottom: 6px;
-  }
-  .calc-box .amount {
-    font-family: "JetBrains Mono", monospace;
-    font-weight: 700;
-    font-size: 28px;
-    letter-spacing: -0.02em;
-  }
-  .calc-box .amount .cur { font-size: 16px; font-weight: 600; color: var(--ink-soft); margin-right: 2px; }
   .save-btn {
     width: 100%;
-    padding: 15px 0;
+    padding: 14px 0;
     border-radius: 12px;
     border: none;
     background: var(--accent);
@@ -193,6 +173,7 @@
     font-size: 16px;
     cursor: pointer;
     box-shadow: 0 3px 0 var(--shadow);
+    margin-top: 6px;
   }
   .save-btn:active { transform: translateY(2px); box-shadow: none; }
   .cancel-edit {
@@ -258,7 +239,7 @@
   .entry-code-row { display: flex; align-items: center; gap: 7px; }
   .entry-code { font-weight: 700; font-size: 14.5px; }
   .entry-sub { font-size: 12px; color: var(--ink-soft); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .entry-amt { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 15px; text-align: right; white-space: nowrap; }
+  .entry-amt { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 14.5px; text-align: right; white-space: nowrap; color: var(--ink-soft); }
   .status-pill {
     font-size: 10.5px;
     font-weight: 700;
@@ -278,27 +259,38 @@
     font-size: 14px;
   }
   /* ---- Summary ---- */
-  .summary-card {
+  .summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .summary-tile {
     background: var(--panel);
     border: 1.5px solid var(--rule);
-    border-radius: 14px;
-    padding: 18px 20px;
-    margin-bottom: 14px;
+    border-radius: 16px;
+    padding: 26px 12px;
+    text-align: center;
+    cursor: pointer;
   }
-  .summary-card h3 {
-    margin: 0 0 10px;
-    font-family: "Roboto Slab", serif;
-    font-size: 14px;
+  .summary-tile-count {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: 34px;
+    line-height: 1;
+  }
+  .summary-tile-label {
+    font-size: 12.5px;
     font-weight: 600;
     color: var(--ink-soft);
+    margin-top: 6px;
   }
-  .summary-line { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; }
-  .summary-line .lbl { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--ink); }
-  .summary-line .dot { width: 9px; height: 9px; border-radius: 999px; flex-shrink: 0; }
-  .summary-line .dot.pending { background: var(--pending); }
-  .summary-line .dot.inprocess { background: var(--inprocess); }
-  .summary-line .dot.completed { background: var(--completed); }
-  .summary-line .val { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 15px; }
+  .summary-tile.pending { border-color: var(--pending); }
+  .summary-tile.pending .summary-tile-count { color: var(--pending); }
+  .summary-tile.inprocess { border-color: var(--inprocess); }
+  .summary-tile.inprocess .summary-tile-count { color: var(--inprocess); }
+  .summary-tile.completed { border-color: var(--completed); }
+  .summary-tile.completed .summary-tile-count { color: var(--completed); }
   /* ---- Detail modal ---- */
   .overlay {
     position: fixed; inset: 0;
@@ -580,10 +572,6 @@
     var d = new Date(iso + "T00:00:00");
     return d.toLocaleDateString("en-IN", { weekday: "short", day: "2-digit", month: "short" });
   }
-  function fmtINR(n) {
-    if (isNaN(n)) return "0";
-    return Math.round(n).toLocaleString("en-IN");
-  }
   function showToast(msg) {
     var t = document.getElementById("toast");
     t.textContent = msg;
@@ -644,18 +632,18 @@
   }
 
   // ---------- Render: Add form ----------
-  var formDraft = { code: "", location: "", vehicle: "", phone: "", quantity: "", unit: "Ton", rate: "", remarks: "" };
+  function blankDraft() {
+    return { code: "", location: "", vehicle: "", phone: "", beforeQty: "", quantity: "", rate: "", afterQty: "", labour: "", date: todayISO(), remarks: "" };
+  }
+  var formDraft = blankDraft();
 
   function resetForm() {
-    formDraft = { code: "", location: "", vehicle: "", phone: "", quantity: "", unit: "Ton", rate: "", remarks: "" };
+    formDraft = blankDraft();
     state.editingId = null;
   }
 
   function renderAdd() {
     var m = document.getElementById("main");
-    var qty = parseFloat(formDraft.quantity) || 0;
-    var rate = parseFloat(formDraft.rate) || 0;
-    var amount = qty * rate;
 
     var chipsHtml = state.recentCodes.map(function (c) {
       return '<span class="chip" data-code="' + escAttr(c) + '">' + escHtml(c) + '</span>';
@@ -666,9 +654,6 @@
       '<div class="field"><label>Code</label>' +
         (chipsHtml ? '<div class="chips">' + chipsHtml + '</div>' : '') +
         '<input id="fCode" type="text" placeholder="e.g. LM14" value="' + escAttr(formDraft.code) + '" autocapitalize="characters" maxlength="12">' +
-      '</div>' +
-      '<div class="field"><label>Remarks <span class="opt">(optional)</span></label>' +
-        '<input id="fRemarks" type="text" placeholder="e.g. loose logs, urgent" value="' + escAttr(formDraft.remarks) + '">' +
       '</div>' +
       '<div class="field"><label>Location <span class="opt">(optional)</span></label>' +
         '<input id="fLocation" type="text" placeholder="e.g. Uddhar Durvaja" value="' + escAttr(formDraft.location) + '">' +
@@ -681,6 +666,9 @@
           '<input id="fPhone" type="tel" inputmode="numeric" placeholder="9864934904" value="' + escAttr(formDraft.phone) + '" maxlength="10">' +
         '</div>' +
       '</div>' +
+      '<div class="field"><label>Before Quantity <span class="opt">(optional)</span></label>' +
+        '<input id="fBeforeQty" type="text" inputmode="decimal" placeholder="0" value="' + escAttr(formDraft.beforeQty) + '">' +
+      '</div>' +
       '<div class="row2">' +
         '<div class="field"><label>Quantity (Tons)</label>' +
           '<input id="fQuantity" type="text" inputmode="decimal" placeholder="0" value="' + escAttr(formDraft.quantity) + '">' +
@@ -689,9 +677,17 @@
           '<input id="fRate" type="text" inputmode="decimal" placeholder="0" value="' + escAttr(formDraft.rate) + '">' +
         '</div>' +
       '</div>' +
-      '<div class="calc-box">' +
-        '<div class="eq">' + (qty || rate ? (qty + ' Ton &times; &#8377;' + rate) : 'Enter quantity &amp; rate') + '</div>' +
-        '<div class="amount"><span class="cur">&#8377;</span>' + fmtINR(amount) + '</div>' +
+      '<div class="field"><label>After Quantity <span class="opt">(optional)</span></label>' +
+        '<input id="fAfterQty" type="text" inputmode="decimal" placeholder="0" value="' + escAttr(formDraft.afterQty) + '">' +
+      '</div>' +
+      '<div class="field"><label>Labour <span class="opt">(optional)</span></label>' +
+        '<input id="fLabour" type="text" placeholder="e.g. names, count" value="' + escAttr(formDraft.labour) + '">' +
+      '</div>' +
+      '<div class="field"><label>Date</label>' +
+        '<input id="fDate" type="date" value="' + escAttr(formDraft.date) + '" required>' +
+      '</div>' +
+      '<div class="field"><label>Remarks <span class="opt">(optional)</span></label>' +
+        '<input id="fRemarks" type="text" placeholder="e.g. loose logs, urgent" value="' + escAttr(formDraft.remarks) + '">' +
       '</div>' +
       '<button class="save-btn" id="saveBtn"' + (!state.storageReady ? ' disabled style="opacity:.5"' : '') + '>' + (!state.storageReady ? "Loading…" : (state.editingId ? "Update Entry" : "Save Entry")) + '</button>' +
       (state.editingId ? '<div class="cancel-edit" id="cancelEditBottom">Cancel edit</div>' : '');
@@ -700,7 +696,6 @@
       var v = sanitizeAlphaNum(e.target.value, false);
       e.target.value = v; formDraft.code = v;
     };
-    document.getElementById("fRemarks").oninput = function (e) { formDraft.remarks = e.target.value; };
     document.getElementById("fLocation").oninput = function (e) { formDraft.location = e.target.value; };
     document.getElementById("fVehicle").oninput = function (e) {
       var v = sanitizeAlphaNum(e.target.value, true);
@@ -710,8 +705,25 @@
       var v = sanitizeDigits(e.target.value, 10);
       e.target.value = v; formDraft.phone = v;
     };
-    document.getElementById("fQuantity").oninput = function (e) { formDraft.quantity = sanitizeDecimal(e.target.value); renderAdd(); restoreFocus("fQuantity"); };
-    document.getElementById("fRate").oninput = function (e) { formDraft.rate = sanitizeDecimal(e.target.value); renderAdd(); restoreFocus("fRate"); };
+    document.getElementById("fBeforeQty").oninput = function (e) {
+      var v = sanitizeDecimal(e.target.value);
+      e.target.value = v; formDraft.beforeQty = v;
+    };
+    document.getElementById("fQuantity").oninput = function (e) {
+      var v = sanitizeDecimal(e.target.value);
+      e.target.value = v; formDraft.quantity = v;
+    };
+    document.getElementById("fRate").oninput = function (e) {
+      var v = sanitizeDecimal(e.target.value);
+      e.target.value = v; formDraft.rate = v;
+    };
+    document.getElementById("fAfterQty").oninput = function (e) {
+      var v = sanitizeDecimal(e.target.value);
+      e.target.value = v; formDraft.afterQty = v;
+    };
+    document.getElementById("fLabour").oninput = function (e) { formDraft.labour = e.target.value; };
+    document.getElementById("fDate").oninput = function (e) { formDraft.date = e.target.value; };
+    document.getElementById("fRemarks").oninput = function (e) { formDraft.remarks = e.target.value; };
 
     Array.prototype.forEach.call(document.querySelectorAll(".chip"), function (chip) {
       chip.onclick = function () { formDraft.code = chip.getAttribute("data-code"); renderAdd(); };
@@ -723,18 +735,13 @@
     if (ce2) ce2.onclick = function () { resetForm(); renderAdd(); };
   }
 
-  function restoreFocus(id) {
-    var el = document.getElementById(id);
-    if (el) { el.focus(); var v = el.value; el.value = ""; el.value = v; }
-  }
-
   function handleSave() {
     if (!state.storageReady) { showToast("Still setting up — try again in a second"); return; }
     if (!formDraft.code.trim()) { showToast("Enter a code"); return; }
     var qty = parseFloat(formDraft.quantity) || 0;
     var rate = parseFloat(formDraft.rate) || 0;
     if (!qty || !rate) { showToast("Enter quantity and rate"); return; }
-    var amount = qty * rate;
+    if (!formDraft.date) { showToast("Select a date"); return; }
 
     var existing = state.editingId ? state.entries.find(function (x) { return x._id === state.editingId; }) : null;
 
@@ -744,12 +751,14 @@
       remarks: formDraft.remarks.trim(),
       vehicle: formDraft.vehicle.trim(),
       phone: formDraft.phone.trim(),
+      beforeQty: formDraft.beforeQty.trim(),
       quantity: qty,
-      unit: formDraft.unit,
+      unit: "Ton",
       rate: rate,
-      amount: amount,
+      afterQty: formDraft.afterQty.trim(),
+      labour: formDraft.labour.trim(),
       status: existing ? (existing.status || "pending") : "pending",
-      date: existing ? existing.date : todayISO(),
+      date: formDraft.date,
       createdAt: existing ? existing.createdAt : Date.now()
     };
 
@@ -770,7 +779,7 @@
       if (state.ledgerFilter !== "all" && s !== state.ledgerFilter) return false;
       if (state.searchQuery) {
         var q = state.searchQuery.toLowerCase();
-        var hay = ((e.code || "") + " " + (e.location || "") + " " + (e.vehicle || "") + " " + (e.remarks || "")).toLowerCase();
+        var hay = ((e.code || "") + " " + (e.location || "") + " " + (e.vehicle || "") + " " + (e.remarks || "") + " " + (e.labour || "")).toLowerCase();
         if (hay.indexOf(q) === -1) return false;
       }
       return true;
@@ -798,9 +807,9 @@
     } else {
       order.forEach(function (date) {
         var dayEntries = groups[date];
-        var dayTotal = 0;
-        dayEntries.forEach(function (e) { dayTotal += e.amount; });
-        html += '<div class="day-group"><div class="day-label"><span>' + fmtDateLabel(date) + '</span><span>&#8377;' + fmtINR(dayTotal) + ' total</span></div>';
+        var dayQty = 0;
+        dayEntries.forEach(function (e) { dayQty += (parseFloat(e.quantity) || 0); });
+        html += '<div class="day-group"><div class="day-label"><span>' + fmtDateLabel(date) + '</span><span>' + dayQty + ' Ton total</span></div>';
         dayEntries.forEach(function (e) {
           var s = e.status || "pending";
           html += '<div class="entry-row" data-id="' + escAttr(e._id) + '">' +
@@ -809,7 +818,7 @@
               '<div class="entry-code-row"><span class="entry-code">' + escHtml(e.code) + '</span><span class="status-pill ' + s + '">' + STATUS_LABEL[s] + '</span></div>' +
               '<div class="entry-sub">' + escHtml([e.remarks, e.location, e.vehicle].filter(Boolean).join(" · ") || "—") + '</div>' +
             '</div>' +
-            '<div class="entry-amt">&#8377;' + fmtINR(e.amount) + '</div>' +
+            '<div class="entry-amt">' + e.quantity + ' Ton</div>' +
           '</div>';
         });
         html += '</div>';
@@ -836,8 +845,9 @@
     var data = {
       code: e.code, location: e.location || "", remarks: e.remarks || "",
       vehicle: e.vehicle || "", phone: e.phone || "",
-      quantity: e.quantity, unit: e.unit || "Ton", rate: e.rate,
-      amount: e.amount, date: e.date, status: status, createdAt: e.createdAt
+      beforeQty: e.beforeQty || "", quantity: e.quantity, unit: e.unit || "Ton", rate: e.rate,
+      afterQty: e.afterQty || "", labour: e.labour || "",
+      date: e.date, status: status, createdAt: e.createdAt
     };
     addOrUpdateEntry(data, e._id).then(function () {
       showToast("Marked " + STATUS_LABEL[status]);
@@ -863,9 +873,11 @@
         (e.location ? '<div class="detail-row"><span>Location</span><span>' + escHtml(e.location) + '</span></div>' : '') +
         (e.vehicle ? '<div class="detail-row"><span>Vehicle</span><span>' + escHtml(e.vehicle) + '</span></div>' : '') +
         (e.phone ? '<div class="detail-row"><span>Phone</span><span>' + escHtml(e.phone) + '</span></div>' : '') +
+        (e.beforeQty ? '<div class="detail-row"><span>Before Quantity</span><span>' + escHtml(e.beforeQty) + ' Ton</span></div>' : '') +
         '<div class="detail-row"><span>Quantity</span><span>' + e.quantity + ' ' + escHtml(e.unit) + '</span></div>' +
-        '<div class="detail-row"><span>Rate</span><span>&#8377;' + fmtINR(e.rate) + '</span></div>' +
-        '<div class="detail-row"><span>Amount</span><span><b>&#8377;' + fmtINR(e.amount) + '</b></span></div>' +
+        (e.afterQty ? '<div class="detail-row"><span>After Quantity</span><span>' + escHtml(e.afterQty) + ' Ton</span></div>' : '') +
+        '<div class="detail-row"><span>Rate</span><span>&#8377;' + e.rate + ' / Ton</span></div>' +
+        (e.labour ? '<div class="detail-row"><span>Labour</span><span>' + escHtml(e.labour) + '</span></div>' : '') +
         '<div class="sheet-actions">' +
           '<button class="btn-edit" id="copyBtn">Copy</button>' +
           '<button class="btn-edit" id="editBtn">Edit</button>' +
@@ -889,8 +901,8 @@
     document.getElementById("editBtn").onclick = function () {
       formDraft = {
         code: e.code, location: e.location || "", vehicle: e.vehicle || "", phone: e.phone || "",
-        remarks: e.remarks || "",
-        quantity: String(e.quantity), unit: e.unit, rate: String(e.rate)
+        beforeQty: e.beforeQty || "", quantity: String(e.quantity), rate: String(e.rate), afterQty: e.afterQty || "",
+        labour: e.labour || "", date: e.date, remarks: e.remarks || ""
       };
       state.editingId = e._id;
       root.innerHTML = "";
@@ -906,38 +918,30 @@
   }
 
   // ---------- Render: Summary ----------
-  function statusTotals(list) {
-    var t = { pending: { count: 0, amount: 0 }, inprocess: { count: 0, amount: 0 }, completed: { count: 0, amount: 0 } };
-    list.forEach(function (e) {
-      var s = e.status || "pending";
-      t[s].count += 1;
-      t[s].amount += e.amount;
-    });
-    return t;
-  }
-
   function renderSummary() {
     var m = document.getElementById("main");
-    var today = todayISO();
-    var monthPrefix = today.slice(0, 7);
-
-    var todayList = state.entries.filter(function (e) { return e.date === today; });
-    var monthList = state.entries.filter(function (e) { return e.date && e.date.slice(0, 7) === monthPrefix; });
-    var todayTot = statusTotals(todayList);
-    var monthTot = statusTotals(monthList);
-
-    function card(title, tot) {
-      return '<div class="summary-card"><h3>' + title + '</h3>' +
-        ["pending", "inprocess", "completed"].map(function (s) {
-          return '<div class="summary-line"><span class="lbl"><span class="dot ' + s + '"></span>' + STATUS_LABEL[s] + ' (' + tot[s].count + ')</span><span class="val">&#8377;' + fmtINR(tot[s].amount) + '</span></div>';
-        }).join("") +
-        '</div>';
-    }
-
-    m.innerHTML = card("Today", todayTot) + card("This month", monthTot) +
-      '<div class="summary-card"><h3>All time</h3>' +
-      '<div class="summary-line"><span class="lbl">Total entries</span><span class="val">' + state.entries.length + '</span></div>' +
+    var counts = { all: state.entries.length, pending: 0, inprocess: 0, completed: 0 };
+    state.entries.forEach(function (e) {
+      var s = e.status || "pending";
+      counts[s] = (counts[s] || 0) + 1;
+    });
+    var order = ["all", "pending", "inprocess", "completed"];
+    var html = '<div class="summary-grid">';
+    order.forEach(function (f) {
+      var label = f === "all" ? "All Entries" : STATUS_LABEL[f];
+      html += '<div class="summary-tile ' + f + '" data-filter="' + f + '">' +
+        '<div class="summary-tile-count">' + counts[f] + '</div>' +
+        '<div class="summary-tile-label">' + label + '</div>' +
       '</div>';
+    });
+    html += '</div>';
+    m.innerHTML = html;
+    Array.prototype.forEach.call(document.querySelectorAll(".summary-tile"), function (tile) {
+      tile.onclick = function () {
+        state.ledgerFilter = tile.getAttribute("data-filter");
+        goView("ledger");
+      };
+    });
   }
 
   // ---------- Router ----------
